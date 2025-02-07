@@ -19,7 +19,7 @@ This AI model is designed to act as an Arabic language teacher for beginner lear
 *   **Architecture:** I am a large language model, trained by Perplexity AI. My architecture is based on the transformer model.
 *   **Parameters:** While the specific number of parameters is proprietary, I have been trained on a massive dataset of text and code to perform a wide range of tasks, including language translation, question answering, and text generation.
 *   **Training Data:** Trained on a diverse dataset of text and code, including a significant amount of Arabic, English, and Urdu language data.
-*   **Version:** (Insert Version Number Here - e.g., 1.0)
+*   **Version:** (Sonar 32k)
 *   **Target Audience:** Beginner Arabic learners (A1 level) proficient in English or Urdu.
 *   **Language Support:** Arabic, English, Urdu
 
