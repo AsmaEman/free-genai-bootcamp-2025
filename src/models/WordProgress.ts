@@ -5,41 +5,41 @@ import { Word } from './Word';
 @Entity('word_progress')
 export class WordProgress {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @ManyToOne(() => User, user => user.wordProgress)
   @JoinColumn({ name: 'userId' })
-  user: User;
+  user!: User;
 
   @Column()
-  userId: string;
+  userId!: string;
 
   @ManyToOne(() => Word, word => word.progress)
   @JoinColumn({ name: 'wordId' })
-  word: Word;
+  word!: Word;
 
   @Column()
-  wordId: string;
+  wordId!: string;
 
-  @Column({ type: 'float', default: 0 })
-  masteryLevel: number;
+  @Column('float', { default: 0 })
+  masteryLevel!: number;
 
   @Column({ default: 0 })
-  timesReviewed: number;
+  timesReviewed!: number;
 
-  @Column({ type: 'jsonb', default: [] })
-  reviewHistory: {
+  @Column('jsonb')
+  reviewHistory!: Array<{
     date: Date;
     correct: boolean;
     responseTime: number;
-  }[];
+  }>;
 
   @Column({ type: 'timestamp', nullable: true })
-  nextReviewDate: Date;
+  nextReviewDate?: Date;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }
