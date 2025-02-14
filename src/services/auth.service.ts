@@ -1,4 +1,4 @@
-import { getRepository } from 'typeorm';
+import { AppDataSource } from '../config/database';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User';
@@ -6,7 +6,7 @@ import { AppError } from '../middleware/error.middleware';
 import config from '../config';
 
 export class AuthService {
-  private userRepository = getRepository(User);
+  private userRepository = AppDataSource.getRepository(User);
 
   async register(userData: {
     email: string;
