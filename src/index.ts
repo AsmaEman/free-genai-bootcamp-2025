@@ -1,9 +1,10 @@
 import 'reflect-metadata';
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { createConnection } from 'typeorm';
 import swaggerUi from 'swagger-ui-express';
+import { AppDataSource } from './config/database';
 import config from './config';
 import { swaggerSpec } from './config/swagger';
 import authRoutes from './routes/auth.routes';
@@ -34,18 +35,26 @@ app.get('/', (req, res) => {
 // Error handling middleware
 app.use(errorMiddleware);
 
-// Database connection and server start
-createConnection(config.database as any)
-  .then(() => {
+// Initialize database connection first, then start server
+const initializeApp = async () => {
+  try {
+    await AppDataSource.initialize();
+    console.log('Database connection initialized');
+    
     app.listen(config.port, () => {
       console.log(`Server is running on port ${config.port}`);
       console.log(`Environment: ${config.nodeEnv}`);
       console.log(`API Documentation available at http://localhost:${config.port}/api-docs`);
     });
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error('Error connecting to the database:', error);
     process.exit(1);
-  });
+  }
+};
+
+initializeApp().catch(error => {
+  console.error('Failed to initialize app:', error);
+  process.exit(1);
+});
 
 export default app;

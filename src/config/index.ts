@@ -19,6 +19,7 @@ const config: Config = {
     port: parseInt(process.env.DB_PORT || '5432', 10),
     username: process.env.DB_USERNAME || 'postgres',
     password: process.env.DB_PASSWORD || 'postgres',
+    name: 'default',
     database: process.env.DB_NAME || 'lang_portal',
     entities: ['src/models/**/*.ts'],
     migrations: ['src/migrations/**/*.ts'],

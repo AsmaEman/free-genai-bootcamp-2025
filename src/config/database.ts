@@ -7,17 +7,20 @@ import { StudySession } from '../models/StudySession';
 import config from './index';
 
 const dbConfig: PostgresConnectionOptions = {
+  name: 'default',
   type: 'postgres',
   host: config.database.host,
   port: config.database.port,
   username: config.database.username,
   password: config.database.password,
   database: config.database.database,
-  synchronize: true, // Set to false in production
+  synchronize: true,
   logging: config.nodeEnv === 'development',
   entities: [User, Word, WordProgress, StudySession],
   migrations: [],
   subscribers: [],
 };
 
-export const AppDataSource = new DataSource(dbConfig);
+const AppDataSource = new DataSource(dbConfig);
+
+export { AppDataSource };
