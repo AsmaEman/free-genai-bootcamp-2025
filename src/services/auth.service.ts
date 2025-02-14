@@ -26,11 +26,21 @@ export class AuthService {
     const user = this.userRepository.create({
       ...userData,
       password: hashedPassword,
+      settings: {
+        preferredLanguage: 'en',
+        notifications: {
+          email: true,
+          push: true,
+        },
+      },
       progress: {
+        level: 1,
+        experience: 0,
         totalWordsLearned: 0,
         currentStreak: 0,
         longestStreak: 0,
         lastStudyDate: new Date(),
+        achievements: [],
       },
     });
 

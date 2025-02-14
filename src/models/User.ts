@@ -35,8 +35,11 @@ export class User {
   progress!: {
     level: number;
     experience: number;
+    totalWordsLearned: number;
+    currentStreak: number;
+    longestStreak: number;
+    lastStudyDate: Date;
     achievements: string[];
-    lastActivity: Date;
   };
 
   @OneToMany(() => StudySession, session => session.user)
