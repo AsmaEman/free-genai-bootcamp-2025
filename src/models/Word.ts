@@ -4,42 +4,42 @@ import { WordProgress } from './WordProgress';
 @Entity('words')
 export class Word {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  arabicText: string;
+  arabicText!: string;
 
   @Column({ nullable: true })
-  diacritics: string;
+  diacritics?: string;
 
   @Column()
-  englishTranslation: string;
+  englishTranslation!: string;
 
   @Column({ type: 'text', array: true, default: [] })
-  examples: string[];
+  examples!: string[];
 
   @Column({ nullable: true })
-  audioUrl: string;
+  audioUrl?: string;
 
   @Column({ type: 'text', array: true, default: [] })
-  tags: string[];
+  tags!: string[];
 
   @Column({ type: 'jsonb', default: {} })
-  metadata: {
+  metadata!: {
     difficulty: 'beginner' | 'intermediate' | 'advanced';
     category: string;
     usage: string[];
   };
 
   @Column({ type: 'text', array: true, default: [] })
-  relatedWords: string[];
+  relatedWords?: string[];
 
   @OneToMany(() => WordProgress, progress => progress.word)
-  progress: WordProgress[];
+  progress!: WordProgress[];
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }
