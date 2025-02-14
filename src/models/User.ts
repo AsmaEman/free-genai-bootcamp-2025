@@ -5,47 +5,49 @@ import { WordProgress } from './WordProgress';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column()
-  password: string;
+  password!: string;
 
   @Column()
-  firstName: string;
+  firstName!: string;
 
   @Column()
-  lastName: string;
+  lastName!: string;
 
   @Column({ default: false })
-  isEmailVerified: boolean;
+  isEmailVerified!: boolean;
 
-  @Column({ type: 'jsonb', default: {} })
-  settings: {
-    dailyGoal?: number;
-    preferredStudyTime?: string;
-    notifications?: boolean;
+  @Column('jsonb')
+  settings!: {
+    preferredLanguage: string;
+    notifications: {
+      email: boolean;
+      push: boolean;
+    };
   };
 
-  @Column({ type: 'jsonb', default: {} })
-  progress: {
-    totalWordsLearned: number;
-    currentStreak: number;
-    longestStreak: number;
-    lastStudyDate: Date;
+  @Column('jsonb')
+  progress!: {
+    level: number;
+    experience: number;
+    achievements: string[];
+    lastActivity: Date;
   };
 
   @OneToMany(() => StudySession, session => session.user)
-  studySessions: StudySession[];
+  studySessions!: StudySession[];
 
   @OneToMany(() => WordProgress, progress => progress.user)
-  wordProgress: WordProgress[];
+  wordProgress!: WordProgress[];
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }
