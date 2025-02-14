@@ -1,36 +1,44 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './User';
 
 @Entity('study_sessions')
 export class StudySession {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @ManyToOne(() => User, user => user.studySessions)
   @JoinColumn({ name: 'userId' })
-  user: User;
+  user!: User;
 
   @Column()
-  userId: string;
+  userId!: string;
 
-  @Column({ type: 'jsonb' })
-  sessionData: {
+  @Column('jsonb')
+  sessionData!: {
+    duration: number;
     wordsStudied: string[];
     correctAnswers: number;
     incorrectAnswers: number;
-    duration: number;
+    score: number;
   };
 
-  @Column({ type: 'enum', enum: ['completed', 'interrupted', 'in_progress'] })
-  status: 'completed' | 'interrupted' | 'in_progress';
+  @Column({
+    type: 'enum',
+    enum: ['completed', 'interrupted', 'in_progress'],
+    default: 'in_progress'
+  })
+  status!: 'completed' | 'interrupted' | 'in_progress';
 
-  @Column({ type: 'jsonb', default: {} })
-  performance: {
+  @Column('jsonb')
+  performance!: {
     accuracy: number;
-    averageResponseTime: number;
-    masteryLevel: number;
+    speed: number;
+    retention: number;
   };
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
 }
