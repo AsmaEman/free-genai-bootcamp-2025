@@ -1,11 +1,11 @@
-import { ConnectionOptions } from 'typeorm';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 interface Config {
   port: number;
   nodeEnv: string;
   jwtSecret: string;
   redisUrl: string;
-  database: ConnectionOptions;
+  database: PostgresConnectionOptions;
 }
 
 const config: Config = {
