@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthService } from '../services/auth.service';
 import { AppError } from '../middleware/error.middleware';
+import { User } from '../models/User';
+import bcrypt from 'bcrypt';
 
 export class AuthController {
   private authService: AuthService;
@@ -11,17 +13,19 @@ export class AuthController {
 
   register = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { email, password, firstName, lastName } = req.body;
+      const userData: Omit<User, 'id' | 'createdAt' | 'updatedAt'> & { settings: { preferredLanguage: string; notifications: { email: boolean; push: boolean; }; }; } = req.body;
 
-      if (!email || !password || !firstName || !lastName) {
+      if (!userData.email || !userData.passwordHash || !userData.firstName || !userData.lastName || !userData.settings || !userData.settings.preferredLanguage || !userData.settings.notifications) {
         throw new AppError(400, 'All fields are required');
       }
 
       const user = await this.authService.register({
-        email,
-        password,
-        firstName,
-        lastName,
+        email: userData.email,
+        passwordHash: userData.passwordHash,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        isEmailVerified: false,
+        settings: userData.settings,
       });
 
       res.status(201).json({
@@ -35,17 +39,28 @@ export class AuthController {
 
   login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { email, password } = req.body;
+      const { email, passwordHash } = req.body;
 
-      if (!email || !password) {
-        throw new AppError(400, 'Email and password are required');
+      if (!email || !passwordHash) {
+        throw new AppError(400, 'Email and passwordHash are required');
       }
 
-      const result = await this.authService.login(email, password);
+      const user = await this.authService.findUserByEmail(email);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      const isPasswordValid = await bcrypt.compare(passwordHash, user.passwordHash);
+      if (!isPasswordValid) {
+        throw new AppError(401, 'Invalid credentials');
+      }
+
+      const token = this.generateToken(user);
+      const { passwordHash: _, ...userWithoutPassword } = user;
 
       res.status(200).json({
         status: 'success',
-        data: result,
+        data: { token, user: userWithoutPassword },
       });
     } catch (error) {
       next(error);
@@ -89,4 +104,8 @@ export class AuthController {
       next(error);
     }
   };
+
+  private generateToken(user: User) {
+    // implement token generation logic here
+  }
 }
