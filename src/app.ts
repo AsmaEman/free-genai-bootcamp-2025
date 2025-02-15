@@ -10,6 +10,8 @@ import swaggerJSDoc from 'swagger-jsdoc';
 import { AppError } from './utils/appError';
 import helmet from 'helmet';
 import { authRouter } from './routes/auth.routes';
+import { wordRouter } from './routes/word.routes';
+import { studySessionRouter } from './routes/study-session.routes';
 
 // Import routes here
 // import authRoutes from './routes/auth.routes';
@@ -26,7 +28,8 @@ app.use(morgan('dev'));
 
 // Routes
 app.use('/api/auth', authRouter);
-// app.use('/api/words', wordRoutes);
+app.use('/api/words', wordRouter);
+app.use('/api/study-sessions', studySessionRouter);
 // app.use('/api/study', studyRoutes);
 
 const swaggerOptions = {

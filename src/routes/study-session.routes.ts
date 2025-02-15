@@ -1,11 +1,14 @@
-import { Router } from 'express';
+import express from 'express';
 import { StudySessionController } from '../controllers/study-session.controller';
 import { validate } from '../middleware/validation.middleware';
 import { createSessionSchema, updateSessionSchema, getSessionsSchema } from '../validations/study-session.validation';
 import { authMiddleware } from '../middleware/auth.middleware';
 
-const router = Router();
-const sessionController = new StudySessionController();
+const router = express.Router();
+const studySessionController = new StudySessionController();
+
+// All study session routes require authentication
+router.use(authMiddleware);
 
 /**
  * @swagger
@@ -29,7 +32,7 @@ const sessionController = new StudySessionController();
  *       401:
  *         description: Unauthorized
  */
-router.post('/', authMiddleware, validate(createSessionSchema), sessionController.createSession);
+router.post('/', validate(createSessionSchema), studySessionController.createSession);
 
 /**
  * @swagger
@@ -74,7 +77,7 @@ router.post('/', authMiddleware, validate(createSessionSchema), sessionControlle
  *       401:
  *         description: Unauthorized
  */
-router.get('/user', authMiddleware, validate(getSessionsSchema), sessionController.getUserSessions);
+router.get('/user/:userId', validate(getSessionsSchema), studySessionController.getUserSessions);
 
 /**
  * @swagger
@@ -98,7 +101,7 @@ router.get('/user', authMiddleware, validate(getSessionsSchema), sessionControll
  *       404:
  *         description: Session not found
  */
-router.get('/:id', authMiddleware, sessionController.getSession);
+router.get('/:id', studySessionController.getSession);
 
 /**
  * @swagger
@@ -130,7 +133,7 @@ router.get('/:id', authMiddleware, sessionController.getSession);
  *       404:
  *         description: Session not found
  */
-router.put('/:id', authMiddleware, validate(updateSessionSchema), sessionController.updateSession);
+router.put('/:id', validate(updateSessionSchema), studySessionController.updateSession);
 
 /**
  * @swagger
@@ -154,6 +157,6 @@ router.put('/:id', authMiddleware, validate(updateSessionSchema), sessionControl
  *       404:
  *         description: Session not found
  */
-router.delete('/:id', authMiddleware, sessionController.deleteSession);
+router.delete('/:id', studySessionController.deleteSession);
 
-export default router;
+export const studySessionRouter = router;
