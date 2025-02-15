@@ -1,59 +1,49 @@
-import { getRepository } from 'typeorm';
-import { Word } from '../models/Word';
+import { PrismaClient } from '@prisma/client';
 import { AppError } from '../middleware/error.middleware';
-import { Like } from 'typeorm';
+
+const prisma = new PrismaClient();
 
 export class WordService {
-  private wordRepository = getRepository(Word);
-
-  async createWord(wordData: Partial<Word>): Promise<Word> {
-    const word = this.wordRepository.create(wordData);
-    return await this.wordRepository.save(word);
+  async createWord(wordData: any): Promise<any> {
+    const word = await prisma.word.create({
+      data: wordData,
+    });
+    return word;
   }
 
-  async getWord(id: string): Promise<Word> {
-    const word = await this.wordRepository.findOne({ where: { id } });
+  async getWord(id: string): Promise<any | null> {
+    const word = await prisma.word.findUnique({
+      where: { id },
+    });
     if (!word) {
       throw new AppError(404, 'Word not found');
     }
     return word;
   }
 
-  async searchWords(params: {
-    query: string;
-    difficulty?: string;
-    category?: string;
-    page: number;
-    limit: number;
-  }) {
-    const { query, difficulty, category, page, limit } = params;
+  async searchWords(params: { query: string; page: number; limit: number; }) {
+    const { query, page, limit } = params;
     const skip = (page - 1) * limit;
 
-    const queryBuilder = this.wordRepository.createQueryBuilder('word');
+    const words = await prisma.word.findMany({
+      where: {
+        OR: [
+          { arabicText: { contains: query, mode: 'insensitive' } },
+          { englishTranslation: { contains: query, mode: 'insensitive' } },
+        ],
+      },
+      skip,
+      take: limit,
+    });
 
-    // Basic search on arabicText or englishTranslation
-    queryBuilder.where(
-      '(word.arabicText ILIKE :query OR word.englishTranslation ILIKE :query)',
-      { query: `%${query}%` }
-    );
-
-    // Add filters if provided
-    if (difficulty) {
-      queryBuilder.andWhere('word.metadata->\'difficulty\' = :difficulty', { difficulty });
-    }
-
-    if (category) {
-      queryBuilder.andWhere('word.metadata->\'category\' = :category', { category });
-    }
-
-    // Get total count for pagination
-    const total = await queryBuilder.getCount();
-
-    // Add pagination
-    queryBuilder.skip(skip).take(limit);
-
-    // Get results
-    const words = await queryBuilder.getMany();
+    const total = await prisma.word.count({
+      where: {
+        OR: [
+          { arabicText: { contains: query, mode: 'insensitive' } },
+          { englishTranslation: { contains: query, mode: 'insensitive' } },
+        ],
+      },
+    });
 
     return {
       words,
@@ -61,27 +51,35 @@ export class WordService {
         total,
         page,
         limit,
-        pages: Math.ceil(total / limit)
-      }
+        pages: Math.ceil(total / limit),
+      },
     };
   }
 
-  async updateWord(id: string, updateData: Partial<Word>): Promise<Word> {
+  async updateWord(id: string, updateData: any): Promise<any> {
     const word = await this.getWord(id);
-    Object.assign(word, updateData);
-    return await this.wordRepository.save(word);
+    return await prisma.word.update({
+      where: { id },
+      data: updateData,
+    });
   }
 
   async deleteWord(id: string): Promise<void> {
-    const word = await this.getWord(id);
-    await this.wordRepository.remove(word);
+    await this.getWord(id);
+    await prisma.word.delete({
+      where: { id },
+    });
   }
 
-  async getRelatedWords(id: string): Promise<Word[]> {
+  async getRelatedWords(id: string): Promise<any[]> {
     const word = await this.getWord(id);
-    if (!word.relatedWords || word.relatedWords.length === 0) {
+    if (!word || !word.relatedWords || word.relatedWords.length === 0) {
       return [];
     }
-    return await this.wordRepository.findByIds(word.relatedWords);
+    return await prisma.word.findMany({
+      where: {
+        id: { in: word.relatedWords },
+      },
+    });
   }
 }

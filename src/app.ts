@@ -2,8 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import { AppDataSource } from './config/database';
-import { errorHandler } from './middleware/error.middleware';
+import { errorMiddleware } from './middleware/error.middleware';
 import config from './config';
+import { BaseEntity } from 'typeorm';
 
 // Import routes here
 // import authRoutes from './routes/auth.routes';
@@ -23,13 +24,13 @@ app.use(morgan('dev'));
 // app.use('/api/study', studyRoutes);
 
 // Error handling
-app.use(errorHandler);
+app.use(errorMiddleware);
 
 // Initialize database connection
 AppDataSource.initialize()
   .then(() => {
     console.log('Database connection initialized');
-    
+    BaseEntity.useDataSource(AppDataSource);
     // Start the server
     app.listen(config.port, () => {
       console.log(`Server is running on port ${config.port}`);

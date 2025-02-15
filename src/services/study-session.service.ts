@@ -1,71 +1,94 @@
-import { getRepository } from 'typeorm';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { StudySession } from '../models/StudySession';
-import { WordProgress } from '../models/WordProgress';
 import { AppError } from '../middleware/error.middleware';
 
+const prisma = new PrismaClient();
+
+interface SessionDataType {
+  [key: string]: any;
+  duration: number;
+  wordsStudied: string[];
+  correctAnswers: number;
+  incorrectAnswers: number;
+}
+
 export class StudySessionService {
-  private sessionRepository = getRepository(StudySession);
-  private progressRepository = getRepository(WordProgress);
+  async createSession(
+    sessionData: Omit<StudySession, 'id' | 'sessionData' | 'performance'> & {
+      sessionData: SessionDataType;
+    }
+  ): Promise<StudySession> {
+    const newSessionData: Prisma.StudySessionCreateInput = {
+      user: { connect: { id: sessionData.userId } },
+      status: sessionData.status || 'pending',
+      sessionData: sessionData.sessionData,
+      performance: {},
+    };
 
-  async createSession(sessionData: Partial<StudySession>): Promise<StudySession> {
-    const session = this.sessionRepository.create(sessionData);
-    await this.sessionRepository.save(session);
+    const session = await prisma.studySession.create({
+      data: newSessionData,
+      include: { user: true },
+    });
 
-    // Update word progress for studied words
-    if (session.sessionData.wordsStudied.length > 0) {
-      await this.updateWordProgress(session);
+    if (session.sessionData && (session.sessionData as SessionDataType).wordsStudied?.length > 0) {
+      await this.updateWordProgress(session as unknown as StudySession);
     }
 
-    return session;
+    return session as unknown as StudySession;
   }
 
   private async updateWordProgress(session: StudySession): Promise<void> {
-    const { wordsStudied, correctAnswers, duration } = session.sessionData;
-    const totalAnswers = correctAnswers + session.sessionData.incorrectAnswers;
-    const accuracy = (correctAnswers / totalAnswers) * 100;
+    const sessionData = session.sessionData as SessionDataType;
+    const totalAnswers = sessionData.correctAnswers + sessionData.incorrectAnswers;
+    const accuracy = totalAnswers > 0 ? (sessionData.correctAnswers / totalAnswers) * 100 : 0;
 
-    for (const wordId of wordsStudied) {
-      let progress = await this.progressRepository.findOne({
+    for (const wordId of sessionData.wordsStudied) {
+      const existingProgress = await prisma.wordProgress.findFirst({
         where: {
           userId: session.userId,
-          wordId,
+          wordId: wordId,
         },
       });
 
-      if (!progress) {
-        progress = this.progressRepository.create({
-          userId: session.userId,
-          wordId,
-          masteryLevel: 0,
-          timesReviewed: 0,
-          reviewHistory: [],
-        });
-      }
-
-      // Update progress based on session performance
-      progress.timesReviewed += 1;
-      progress.reviewHistory.push({
+      const reviewHistoryEntry = {
         date: session.createdAt,
         correct: true, // This should be tracked per word in the session
-        responseTime: duration / wordsStudied.length, // Average response time
-      });
+        responseTime: sessionData.duration / sessionData.wordsStudied.length,
+      };
 
-      // Calculate new mastery level (simplified version)
-      const newMasteryLevel = (progress.masteryLevel + accuracy) / 2;
-      progress.masteryLevel = Math.min(newMasteryLevel, 100);
+      const progressData: Prisma.WordProgressCreateInput | Prisma.WordProgressUpdateInput = {
+        user: existingProgress ? undefined : { connect: { id: session.userId } },
+        word: existingProgress ? undefined : { connect: { id: wordId } },
+        masteryLevel: existingProgress 
+          ? (existingProgress.masteryLevel + accuracy) / 2 
+          : accuracy,
+        timesReviewed: existingProgress 
+          ? existingProgress.timesReviewed + 1 
+          : 1,
+        reviewHistory: existingProgress 
+          ? { push: reviewHistoryEntry }
+          : [reviewHistoryEntry],
+        nextReviewDate: this.calculateNextReviewDate(
+          existingProgress ? (existingProgress.masteryLevel + accuracy) / 2 : accuracy
+        ),
+      };
 
-      // Calculate next review date using spaced repetition
-      progress.nextReviewDate = this.calculateNextReviewDate(progress.masteryLevel);
-
-      await this.progressRepository.save(progress);
+      if (existingProgress) {
+        await prisma.wordProgress.update({
+          where: { id: existingProgress.id },
+          data: progressData,
+        });
+      } else {
+        await prisma.wordProgress.create({
+          data: progressData as Prisma.WordProgressCreateInput,
+        });
+      }
     }
   }
 
   private calculateNextReviewDate(masteryLevel: number): Date {
-    // Simple spaced repetition algorithm
-    // Higher mastery level = longer interval between reviews
-    const baseInterval = 24; // hours
-    const multiplier = Math.floor(masteryLevel / 20); // 0-5 based on mastery level
+    const baseInterval = 24;
+    const multiplier = Math.floor(masteryLevel / 20);
     const intervalHours = baseInterval * (multiplier + 1);
     
     const nextDate = new Date();
@@ -74,16 +97,16 @@ export class StudySessionService {
   }
 
   async getSession(id: string): Promise<StudySession> {
-    const session = await this.sessionRepository.findOne({
+    const session = await prisma.studySession.findUnique({
       where: { id },
-      relations: ['user'],
+      include: { user: true },
     });
 
     if (!session) {
       throw new AppError(404, 'Study session not found');
     }
 
-    return session;
+    return session as unknown as StudySession;
   }
 
   async getUserSessions(params: {
@@ -97,32 +120,30 @@ export class StudySessionService {
     const { userId, status, startDate, endDate, page, limit } = params;
     const skip = (page - 1) * limit;
 
-    const queryBuilder = this.sessionRepository
-      .createQueryBuilder('session')
-      .where('session.userId = :userId', { userId });
+    const where: Prisma.StudySessionWhereInput = {
+      userId,
+      ...(status && { status }),
+      ...(startDate || endDate) && {
+        createdAt: {
+          ...(startDate && { gte: startDate }),
+          ...(endDate && { lte: endDate }),
+        },
+      },
+    };
 
-    if (status) {
-      queryBuilder.andWhere('session.status = :status', { status });
-    }
-
-    if (startDate) {
-      queryBuilder.andWhere('session.createdAt >= :startDate', { startDate });
-    }
-
-    if (endDate) {
-      queryBuilder.andWhere('session.createdAt <= :endDate', { endDate });
-    }
-
-    const total = await queryBuilder.getCount();
-
-    const sessions = await queryBuilder
-      .orderBy('session.createdAt', 'DESC')
-      .skip(skip)
-      .take(limit)
-      .getMany();
+    const [sessions, total] = await Promise.all([
+      prisma.studySession.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+        include: { user: true },
+      }),
+      prisma.studySession.count({ where }),
+    ]);
 
     return {
-      sessions,
+      sessions: sessions as unknown as StudySession[],
       pagination: {
         total,
         page,
@@ -132,20 +153,44 @@ export class StudySessionService {
     };
   }
 
-  async updateSession(id: string, updateData: Partial<StudySession>): Promise<StudySession> {
+  async updateSession(
+    id: string,
+    sessionData: Partial<Omit<StudySession, 'id' | 'createdAt' | 'updatedAt'>>
+  ): Promise<StudySession> {
     const session = await this.getSession(id);
     
-    // If session is being marked as completed, update word progress
-    if (updateData.status === 'completed' && session.status !== 'completed') {
-      await this.updateWordProgress({ ...session, ...updateData });
+    if (sessionData.status === 'completed' && session.status !== 'completed') {
+      const validatedSessionData = session.sessionData as SessionDataType;
+      if (validatedSessionData) {
+        await this.updateWordProgress({
+          ...session,
+          ...sessionData,
+          sessionData: validatedSessionData,
+        } as StudySession);
+      }
     }
 
-    Object.assign(session, updateData);
-    return await this.sessionRepository.save(session);
+    const updateData: Prisma.StudySessionUpdateInput = {
+      status: sessionData.status,
+      sessionData: sessionData.sessionData as Prisma.InputJsonValue,
+      performance: sessionData.performance as Prisma.InputJsonValue,
+      updatedAt: new Date(),
+    };
+
+    const updatedSession = await prisma.studySession.update({
+      where: { id },
+      data: updateData,
+      include: { user: true },
+    });
+
+    return updatedSession as unknown as StudySession;
   }
 
   async deleteSession(id: string): Promise<void> {
-    const session = await this.getSession(id);
-    await this.sessionRepository.remove(session);
+    await this.getSession(id);
+    await prisma.studySession.delete({
+      where: { id },
+    });
   }
 }
+
