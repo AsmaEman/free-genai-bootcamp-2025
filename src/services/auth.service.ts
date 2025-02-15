@@ -1,55 +1,56 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { User } from '../models/User';
 import { AppError } from '../utils/appError';
 import config from '../config';
+import { UserData } from '../types/user';
 
 const prisma = new PrismaClient();
 
-type CreateUserInput = {
-  email: string;
-  passwordHash: string;
-  firstName: string;
-  lastName: string;
-};
-
 export class AuthService {
-  async findUserByEmail(email: string) {
+  async findUserByEmail(email: string): Promise<UserData | null> {
     try {
-      const prismaUser = await prisma.user.findUnique({
+      const user = await prisma.user.findUnique({
         where: { email },
         select: {
           id: true,
           email: true,
           passwordHash: true,
-          firstName: true,
-          lastName: true,
           isEmailVerified: true,
           settings: true,
           progress: true,
-          studySessions: true,
-          wordProgress: true,
           createdAt: true,
           updatedAt: true,
-        }
+        },
       });
 
-      if (!prismaUser) return null;
+      if (!user) return null;
 
-      return prismaUser as unknown as User;
+      return {
+        ...user,
+        isEmailVerified: user.isEmailVerified,
+        settings: user.settings as UserData['settings'],
+        progress: user.progress as unknown as UserData['progress'],
+      };
     } catch (error) {
       console.error('Find user error:', error);
       throw error;
     }
   }
 
-  async createUser(data: CreateUserInput) {
+  async createUser(data: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+  }): Promise<UserData> {
     try {
-      const prismaUser = await prisma.user.create({
+      const passwordHash = await bcrypt.hash(data.password, 10);
+
+      const user = await prisma.user.create({
         data: {
           email: data.email,
-          passwordHash: data.passwordHash,
+          passwordHash,
           firstName: data.firstName,
           lastName: data.lastName,
           isEmailVerified: false,
@@ -66,24 +67,15 @@ export class AuthService {
             lastStudyDate: new Date(),
             achievements: []
           }
-        },
-        select: {
-          id: true,
-          email: true,
-          passwordHash: true,
-          firstName: true,
-          lastName: true,
-          isEmailVerified: true,
-          settings: true,
-          progress: true,
-          studySessions: true,
-          wordProgress: true,
-          createdAt: true,
-          updatedAt: true,
         }
       });
 
-      return prismaUser as unknown as User;
+      return {
+        ...user,
+        isEmailVerified: user.isEmailVerified,
+        settings: user.settings as UserData['settings'],
+        progress: user.progress as unknown as UserData['progress'],
+      };
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -94,7 +86,12 @@ export class AuthService {
     }
   }
 
-  async register(userData: CreateUserInput) {
+  async register(userData: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+  }) {
     const existingUser = await this.findUserByEmail(userData.email);
 
     if (existingUser) {
@@ -137,7 +134,7 @@ export class AuthService {
     return user;
   }
 
-  private generateToken(user: User): string {
+  private generateToken(user: UserData): string {
     return jwt.sign(
       {
         id: user.id,
