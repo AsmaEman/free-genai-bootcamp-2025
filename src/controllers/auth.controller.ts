@@ -80,7 +80,7 @@ export class AuthController {
 
       const user = await this.authService.register({
         email,
-        passwordHash,
+        password,
         firstName,
         lastName,
       });

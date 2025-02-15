@@ -8,6 +8,8 @@ import { BaseEntity } from 'typeorm';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import { AppError } from './utils/appError';
+import helmet from 'helmet';
+import { authRouter } from './routes/auth.routes';
 
 // Import routes here
 // import authRoutes from './routes/auth.routes';
@@ -18,11 +20,12 @@ const app = express();
 
 // Middleware
 app.use(cors());
+app.use(helmet());
 app.use(express.json());
 app.use(morgan('dev'));
 
 // Routes
-// app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRouter);
 // app.use('/api/words', wordRoutes);
 // app.use('/api/study', studyRoutes);
 
@@ -47,7 +50,7 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Error handling
+// Error handling middleware
 app.use(errorMiddleware);
 
 // Initialize database connection
@@ -65,4 +68,4 @@ AppDataSource.initialize()
     process.exit(1);
   });
 
-export default app;
+export { app };
