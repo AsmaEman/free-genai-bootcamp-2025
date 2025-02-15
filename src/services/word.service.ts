@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { AppError } from '../middleware/error.middleware';
+import { AppError } from '../utils/appError';
+import { Word } from '../models/Word';
 
 const prisma = new PrismaClient();
 

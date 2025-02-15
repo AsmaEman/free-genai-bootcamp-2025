@@ -5,6 +5,9 @@ import { AppDataSource } from './config/database';
 import { errorMiddleware } from './middleware/error.middleware';
 import config from './config';
 import { BaseEntity } from 'typeorm';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
+import { AppError } from './utils/appError';
 
 // Import routes here
 // import authRoutes from './routes/auth.routes';
@@ -22,6 +25,27 @@ app.use(morgan('dev'));
 // app.use('/api/auth', authRoutes);
 // app.use('/api/words', wordRoutes);
 // app.use('/api/study', studyRoutes);
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Language Learning API',
+      version: '1.0.0',
+      description: 'API documentation for Language Learning Platform',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Development server',
+      },
+    ],
+  },
+  apis: ['./src/controllers/*.ts'], // Path to the API docs
+};
+
+const swaggerDocs = swaggerJSDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Error handling
 app.use(errorMiddleware);
