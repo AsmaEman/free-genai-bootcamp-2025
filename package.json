@@ -17,7 +17,10 @@
     "migration:generate": "npm run typeorm migration:generate",
     "migration:run": "npm run typeorm migration:run",
     "migration:revert": "npm run typeorm migration:revert",
-    "build:debug": "cross-env DEBUG=typeorm* npm run build"
+    "build:debug": "cross-env DEBUG=typeorm* npm run build",
+    "test:words": "jest src/tests/api/word.api.test.ts",
+    "test:study": "jest src/tests/api/study-session.api.test.ts",
+    "test:all": "jest src/tests/api --detectOpenHandles --forceExit"
   },
   "keywords": [],
   "author": "",

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { WordService } from '../services/word.service';
 import { AppError } from '../utils/appError';
+import { AuthRequest } from '../middleware/auth.middleware';
 
 /**
  * @swagger
@@ -26,8 +27,12 @@ export class WordController {
     this.wordService = new WordService();
   }
 
-  createWord = async (req: Request, res: Response, next: NextFunction) => {
+  createWord = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
+      if (!req.user?.id) {
+        throw new AppError(401, 'User not authenticated');
+      }
+
       const word = await this.wordService.createWord(req.body);
       res.status(201).json({
         status: 'success',
@@ -52,16 +57,18 @@ export class WordController {
 
   searchWords = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { query, page = 1, limit = 10 } = req.query;
+      const { query } = req.query;
+      const page = Number(req.query.page || 1);
+      const limit = Number(req.query.limit || 10);
       
-      if (!query) {
+      if (!query || typeof query !== 'string') {
         throw new AppError(400, 'Search query is required');
       }
 
       const result = await this.wordService.searchWords({
-        query: query as string,
-        page: Number(page),
-        limit: Number(limit),
+        query,
+        page,
+        limit,
       });
 
       res.status(200).json({
@@ -73,8 +80,12 @@ export class WordController {
     }
   };
 
-  updateWord = async (req: Request, res: Response, next: NextFunction) => {
+  updateWord = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
+      if (!req.user?.id) {
+        throw new AppError(401, 'User not authenticated');
+      }
+
       const word = await this.wordService.updateWord(req.params.id, req.body);
       res.status(200).json({
         status: 'success',
@@ -85,8 +96,12 @@ export class WordController {
     }
   };
 
-  deleteWord = async (req: Request, res: Response, next: NextFunction) => {
+  deleteWord = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
+      if (!req.user?.id) {
+        throw new AppError(401, 'User not authenticated');
+      }
+
       await this.wordService.deleteWord(req.params.id);
       res.status(204).send();
     } catch (error) {
@@ -96,10 +111,10 @@ export class WordController {
 
   getRelatedWords = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const relatedWords = await this.wordService.getRelatedWords(req.params.id);
+      const words = await this.wordService.getRelatedWords(req.params.id);
       res.status(200).json({
         status: 'success',
-        data: relatedWords,
+        data: words,
       });
     } catch (error) {
       next(error);

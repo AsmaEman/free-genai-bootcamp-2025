@@ -1,5 +1,13 @@
-import request from 'supertest';
-import { app } from '../../app';
+// Set NODE_ENV to 'test' before anything else
+process.env.NODE_ENV = 'test';
+
+// Mock auth middleware before importing app
+jest.mock('../../middleware/auth.middleware', () => ({
+  authMiddleware: (req: any, res: any, next: any) => {
+    req.user = { id: '1', email: 'test@example.com' };
+    next();
+  },
+}));
 
 var mockPrismaClient = {
   studySession: {
@@ -7,12 +15,17 @@ var mockPrismaClient = {
     findUnique: jest.fn(),
     findMany: jest.fn(),
     update: jest.fn(),
+    delete: jest.fn(),
   },
 };
 
 jest.mock('@prisma/client', () => ({
   PrismaClient: jest.fn(() => mockPrismaClient),
 }));
+
+// Now import the app
+import request from 'supertest';
+import { app } from '../../app';
 
 describe('Study Session API', () => {
   beforeEach(() => {
@@ -31,16 +44,22 @@ describe('Study Session API', () => {
     };
 
     it('should create a new study session', async () => {
-      mockPrismaClient.studySession.create.mockResolvedValueOnce({
+      const mockCreatedSession = {
         id: '1',
         ...validSession,
         status: 'in_progress',
+        performance: {
+          accuracy: 0.8,
+        },
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
+      };
+
+      mockPrismaClient.studySession.create.mockResolvedValueOnce(mockCreatedSession);
 
       const response = await request(app)
         .post('/api/study-sessions')
+        .set('Authorization', 'Bearer test-token')
         .send(validSession)
         .expect(201);
 
@@ -49,9 +68,12 @@ describe('Study Session API', () => {
         data: expect.objectContaining({
           id: expect.any(String),
           userId: validSession.userId,
+          status: 'in_progress',
         }),
       });
     });
+
+    // Add more test cases...
   });
 
   describe('GET /api/study-sessions/:id', () => {

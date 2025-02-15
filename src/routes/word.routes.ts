@@ -1,10 +1,10 @@
-import { Router } from 'express';
+import express from 'express';
 import { WordController } from '../controllers/word.controller';
 import { validate } from '../middleware/validation.middleware';
 import { createWordSchema, updateWordSchema, searchWordSchema } from '../validations/word.validation';
 import { authMiddleware } from '../middleware/auth.middleware';
 
-const router = Router();
+const router = express.Router();
 const wordController = new WordController();
 
 /**
@@ -169,4 +169,4 @@ router.delete('/:id', authMiddleware, wordController.deleteWord);
  */
 router.get('/:id/related', wordController.getRelatedWords);
 
-export default router;
+export const wordRouter = router;

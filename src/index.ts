@@ -8,9 +8,10 @@ import { AppDataSource } from './config/database';
 import config from './config';
 import { swaggerSpec } from './config/swagger';
 import { authRouter } from './routes/auth.routes';
-import wordRoutes from './routes/word.routes';
-import studySessionRoutes from './routes/study-session.routes';
+import { wordRouter } from './routes/word.routes';
+import { studySessionRouter } from './routes/study-session.routes';
 import { errorMiddleware } from './middleware/error.middleware';
+import morgan from 'morgan';
 
 const app = express();
 
@@ -18,14 +19,15 @@ const app = express();
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
+app.use(morgan('dev'));
 
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use('/api/auth', authRouter);
-app.use('/api/words', wordRoutes);
-app.use('/api/study-sessions', studySessionRoutes);
+app.use('/api/words', wordRouter);
+app.use('/api/study-sessions', studySessionRouter);
 
 // Basic route for testing
 app.get('/', (req, res) => {
@@ -58,4 +60,4 @@ initializeApp().catch(error => {
   process.exit(1);
 });
 
-export default app;
+export { app };
