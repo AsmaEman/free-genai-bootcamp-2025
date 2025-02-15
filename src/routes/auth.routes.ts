@@ -1,9 +1,9 @@
-import { Router } from 'express';
+import express from 'express';
 import { AuthController } from '../controllers/auth.controller';
 import { validate } from '../middleware/validation.middleware';
 import { AppError } from '../utils/appError';
 
-const router = Router();
+const router = express.Router();
 const authController = new AuthController();
 
 /**
@@ -128,4 +128,4 @@ router.post('/reset-password', authController.resetPassword);
  */
 router.get('/verify-email/:token', authController.verifyEmail);
 
-export default router;
+export const authRouter = router;

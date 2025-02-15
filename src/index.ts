@@ -7,7 +7,7 @@ import swaggerUi from 'swagger-ui-express';
 import { AppDataSource } from './config/database';
 import config from './config';
 import { swaggerSpec } from './config/swagger';
-import authRoutes from './routes/auth.routes';
+import { authRouter } from './routes/auth.routes';
 import wordRoutes from './routes/word.routes';
 import studySessionRoutes from './routes/study-session.routes';
 import { errorMiddleware } from './middleware/error.middleware';
@@ -23,7 +23,7 @@ app.use(express.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRouter);
 app.use('/api/words', wordRoutes);
 app.use('/api/study-sessions', studySessionRoutes);
 

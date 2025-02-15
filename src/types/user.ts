@@ -2,6 +2,8 @@ export type UserData = {
   id: string;
   email: string;
   passwordHash: string;
+  firstName: string;
+  lastName: string;
   isEmailVerified: boolean;
   settings: {
     preferredLanguage: string;
