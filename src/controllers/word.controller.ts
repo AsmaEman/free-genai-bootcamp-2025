@@ -35,7 +35,7 @@ export class WordController {
 
   searchWords = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { query, difficulty, category, page = 1, limit = 10 } = req.query;
+      const { query, page = 1, limit = 10 } = req.query;
       
       if (!query) {
         throw new AppError(400, 'Search query is required');
@@ -43,8 +43,6 @@ export class WordController {
 
       const result = await this.wordService.searchWords({
         query: query as string,
-        difficulty: difficulty as string,
-        category: category as string,
         page: Number(page),
         limit: Number(limit),
       });

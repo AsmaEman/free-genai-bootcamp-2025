@@ -39,6 +39,7 @@ app.use(errorMiddleware);
 const initializeApp = async () => {
   try {
     await AppDataSource.initialize();
+    
     console.log('Database connection initialized');
     
     app.listen(config.port, () => {

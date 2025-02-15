@@ -1,4 +1,4 @@
-import { DataSource } from 'typeorm';
+import { DataSource, BaseEntity } from 'typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { User } from '../models/User';
 import { Word } from '../models/Word';
@@ -23,4 +23,8 @@ const dbConfig: PostgresConnectionOptions = {
 
 const AppDataSource = new DataSource(dbConfig);
 
+// Bind the DataSource to BaseEntity so that static methods work correctly
+BaseEntity.useDataSource(AppDataSource);
+
+export default AppDataSource;
 export { AppDataSource };
