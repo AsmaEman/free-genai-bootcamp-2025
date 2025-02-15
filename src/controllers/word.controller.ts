@@ -1,6 +1,23 @@
 import { Request, Response, NextFunction } from 'express';
 import { WordService } from '../services/word.service';
-import { AppError } from '../middleware/error.middleware';
+import { AppError } from '../utils/appError';
+
+/**
+ * @swagger
+ * /api/words:
+ *   get:
+ *     summary: Get all words
+ *     tags: [Words]
+ *     responses:
+ *       200:
+ *         description: List of words
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Word'
+ */
 
 export class WordController {
   private wordService: WordService;

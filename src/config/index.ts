@@ -9,9 +9,9 @@ interface Config {
 }
 
 const config: Config = {
-  port: parseInt(process.env.PORT || '3000', 10),
+  port: parseInt(process.env.PORT || '3001', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
-  jwtSecret: process.env.JWT_SECRET || 'your_secure_jwt_secret_key',
+  jwtSecret: process.env.JWT_SECRET || 'your-secret-key',
   redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
   database: {
     type: 'postgres',

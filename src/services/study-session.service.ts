@@ -1,6 +1,6 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import { StudySession } from '../models/StudySession';
-import { AppError } from '../middleware/error.middleware';
+import { AppError } from '../utils/appError';
 
 const prisma = new PrismaClient();
 

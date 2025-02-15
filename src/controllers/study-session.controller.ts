@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { StudySessionService } from '../services/study-session.service';
-import { AppError } from '../middleware/error.middleware';
+import { AppError } from '../utils/appError';
+
 import { AuthRequest } from '../middleware/auth.middleware';
 
 export class StudySessionController {

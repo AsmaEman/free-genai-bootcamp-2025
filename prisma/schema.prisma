@@ -14,13 +14,18 @@ generator client {
 }
 
 model User {
-  id            String          @id @default(uuid())
-  email         String          @unique
-  passwordHash   String
-  wordProgress  WordProgress[]
-  studySessions StudySession[]
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id              String          @id @default(uuid())
+  email           String          @unique
+  passwordHash    String
+  firstName       String
+  lastName        String
+  isEmailVerified Boolean         @default(false)
+  settings        Json            @default("{\"preferredLanguage\":\"en\",\"notifications\":{\"email\":true,\"push\":true}}")
+  progress        Json            @default("{\"level\":1,\"experience\":0,\"totalWordsLearned\":0,\"currentStreak\":0,\"longestStreak\":0,\"lastStudyDate\":null,\"achievements\":[]}")
+  wordProgress    WordProgress[]
+  studySessions   StudySession[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 }
 
 model Word {
