@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "User" ALTER COLUMN "settings" DROP DEFAULT,
-ALTER COLUMN "progress" DROP DEFAULT;
