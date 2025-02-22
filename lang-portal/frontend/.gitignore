@@ -1,0 +1,66 @@
+# Existing entries from your file
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Additional recommended entries
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+
+# Supabase
+.supabase/
+supabase/.temp
+**/supabase/.branches
+**/supabase/.temp
+**/supabase/.env
+
+# Testing
+/coverage
+.nyc_output
+
+# Build output
+build/
+out/
+.next/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.npm
+.eslintcache
+.stylelintcache
+
+# Misc
+*.pem
+.vercel
+*.tsbuildinfo
+.turbo
+git status
+git status
+git status
