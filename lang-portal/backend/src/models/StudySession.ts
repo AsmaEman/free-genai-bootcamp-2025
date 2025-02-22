@@ -1,36 +1,81 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { ObjectType, Field } from 'type-graphql';
+import { GraphQLScalarType, Kind } from 'graphql';
 import { User } from './User';
+import { WordProgress } from './WordProgress';
 
-@Entity('study_sessions')
+// Define a custom scalar for JSON
+const GraphQLJSON = new GraphQLScalarType({
+  name: 'JSON',
+  description: 'The `JSON` scalar type represents JSON values.',
+  parseValue(value) {
+    return value; // value from the client input variables
+  },
+  serialize(value) {
+    return value; // value sent to the client
+  },
+  parseLiteral(ast) {
+    if (ast.kind === Kind.STRING) {
+      return JSON.parse(ast.value); // ast value is always in string format
+    }
+    return null;
+  },
+});
+
+@ObjectType()
+class SessionData {
+  [key: string]: any; // Add index signature
+
+  @Field()
+  duration!: number;
+
+  @Field(() => [String])
+  wordsStudied!: string[];
+
+  @Field()
+  correctAnswers!: number;
+
+  @Field()
+  incorrectAnswers!: number;
+}
+
+@ObjectType()
 export class StudySession {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @Field()
+  id!: string;
 
-  @ManyToOne(() => User, user => user.studySessions)
-  @JoinColumn({ name: 'userId' })
-  user: User;
+  @Field()
+  userId!: string;
 
-  @Column()
-  userId: string;
+  @Field()
+  createdAt!: Date;
 
-  @Column({ type: 'jsonb' })
-  sessionData: {
-    wordsStudied: string[];
-    correctAnswers: number;
-    incorrectAnswers: number;
-    duration: number;
-  };
+  @Field()
+  updatedAt!: Date;
 
-  @Column({ type: 'enum', enum: ['completed', 'interrupted', 'in_progress'] })
-  status: 'completed' | 'interrupted' | 'in_progress';
+  @Field()
+  status!: string;
 
-  @Column({ type: 'jsonb', default: {} })
-  performance: {
-    accuracy: number;
-    averageResponseTime: number;
-    masteryLevel: number;
-  };
+  @Field(() => SessionData)
+  sessionData!: SessionData;
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @Field(() => GraphQLJSON)
+  performance!: any; // Use 'any' to allow any JSON structure
+
+  constructor(
+    id: string,
+    userId: string,
+    createdAt: Date,
+    updatedAt: Date,
+    status: string,
+    sessionData: SessionData,
+    performance: any
+  ) {
+    this.id = id;
+    this.userId = userId;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    this.status = status;
+    this.sessionData = sessionData;
+    this.performance = performance;
+  }
 }

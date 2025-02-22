@@ -1,45 +1,61 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from './User';
-import { Word } from './Word';
+import { ObjectType, Field } from 'type-graphql';
 
-@Entity('word_progress')
+@ObjectType()
+class ReviewHistoryEntry {
+  @Field()
+  date!: Date;
+
+  @Field()
+  correct!: boolean;
+
+  @Field()
+  responseTime!: number;
+}
+
+@ObjectType()
 export class WordProgress {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @Field()
+  id!: string;
 
-  @ManyToOne(() => User, user => user.wordProgress)
-  @JoinColumn({ name: 'userId' })
-  user: User;
+  @Field()
+  userId!: string;
 
-  @Column()
-  userId: string;
+  @Field()
+  wordId!: string;
 
-  @ManyToOne(() => Word, word => word.progress)
-  @JoinColumn({ name: 'wordId' })
-  word: Word;
+  @Field()
+  masteryLevel!: number;
 
-  @Column()
-  wordId: string;
+  @Field()
+  timesReviewed!: number;
 
-  @Column({ type: 'float', default: 0 })
-  masteryLevel: number;
+  @Field(() => [ReviewHistoryEntry])
+  reviewHistory!: ReviewHistoryEntry[];
 
-  @Column({ default: 0 })
-  timesReviewed: number;
+  @Field()
+  nextReviewDate!: Date;
 
-  @Column({ type: 'jsonb', default: [] })
-  reviewHistory: {
-    date: Date;
-    correct: boolean;
-    responseTime: number;
-  }[];
+  @Field()
+  createdAt: Date = new Date();
 
-  @Column({ type: 'timestamp', nullable: true })
-  nextReviewDate: Date;
+  @Field()
+  updatedAt: Date = new Date();
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
+  constructor(
+    id: string,
+    userId: string,
+    wordId: string,
+    masteryLevel: number,
+    timesReviewed: number,
+    reviewHistory: ReviewHistoryEntry[],
+    nextReviewDate: Date
+  ) {
+    this.id = id;
+    this.userId = userId;
+    this.wordId = wordId;
+    this.masteryLevel = masteryLevel;
+    this.timesReviewed = timesReviewed;
+    this.reviewHistory = reviewHistory;
+    this.nextReviewDate = nextReviewDate;
+  }
 }

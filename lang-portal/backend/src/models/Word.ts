@@ -1,45 +1,45 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { ObjectType, Field } from 'type-graphql';
 import { WordProgress } from './WordProgress';
 
-@Entity('words')
+@ObjectType()
 export class Word {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @Field()
+  id?: string;
 
-  @Column()
-  arabicText: string;
+  @Field()
+  arabicText?: string;
 
-  @Column({ nullable: true })
-  diacritics: string;
+  @Field({ nullable: true })
+  diacritics?: string;
 
-  @Column()
-  englishTranslation: string;
+  @Field()
+  englishTranslation?: string;
 
-  @Column({ type: 'text', array: true, default: [] })
-  examples: string[];
+  @Field(() => [String])
+  examples?: string[];
 
-  @Column({ nullable: true })
-  audioUrl: string;
+  @Field({ nullable: true })
+  audioUrl?: string;
 
-  @Column({ type: 'text', array: true, default: [] })
-  tags: string[];
+  @Field(() => [String])
+  tags?: string[];
 
-  @Column({ type: 'jsonb', default: {} })
-  metadata: {
+  @Field(() => Object)
+  metadata?: {
     difficulty: 'beginner' | 'intermediate' | 'advanced';
     category: string;
     usage: string[];
   };
 
-  @Column({ type: 'text', array: true, default: [] })
-  relatedWords: string[];
+  @Field(() => [String], { nullable: true })
+  relatedWords?: string[];
 
-  @OneToMany(() => WordProgress, progress => progress.word)
-  progress: WordProgress[];
+  @Field(() => [WordProgress], { nullable: true })
+  progress?: WordProgress[];
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @Field()
+  createdAt?: Date;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @Field()
+  updatedAt?: Date;
 }
