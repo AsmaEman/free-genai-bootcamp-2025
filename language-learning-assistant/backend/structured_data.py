@@ -12,7 +12,7 @@ class TranscriptStructurer:
         self.bedrock_client = boto3.client('bedrock-runtime', region_name="us-east-1")
         self.model_id = model_id
         self.prompts = {
-            1: """Extract questions from section 問題1 of this JLPT transcript where the answer can be determined solely from the conversation without needing visual aids.
+            1: """Extract questions from section القسم 1 of this Arabic transcript where the answer can be determined solely from the conversation without needing visual aids.
             
             ONLY include questions that meet these criteria:
             - The answer can be determined purely from the spoken dialogue
@@ -35,31 +35,31 @@ class TranscriptStructurer:
 
             <question>
             Introduction:
-            [the situation setup in japanese]
+            [the situation setup in Arabic]
             
             Conversation:
-            [the dialogue in japanese]
+            [the dialogue in Arabic]
             
             Question:
-            [the question being asked in japanese]
+            [the question being asked in Arabic]
 
             Options:
-            1. [first option in japanese]
-            2. [second option in japanese]
-            3. [third option in japanese]
-            4. [fourth option in japanese]
+            1. [first option in Arabic]
+            2. [second option in Arabic]
+            3. [third option in Arabic]
+            4. [fourth option in Arabic]
             </question>
 
             Rules:
-            - Only extract questions from the 問題1 section
+            - Only extract questions from the القسم 1 section
             - Only include questions where answers can be determined from dialogue alone
-            - Ignore any practice examples (marked with 例)
-            - Do not translate any Japanese text
+            - Ignore any practice examples (marked with مثال)
+            - Do not translate any Arabic text
             - Do not include any section descriptions or other text
             - Output questions one after another with no extra text between them
             """,
             
-            2: """Extract questions from section 問題2 of this JLPT transcript where the answer can be determined solely from the conversation without needing visual aids.
+            2: """Extract questions from section القسم 2 of this Arabic transcript where the answer can be determined solely from the conversation without needing visual aids.
             
             ONLY include questions that meet these criteria:
             - The answer can be determined purely from the spoken dialogue
@@ -82,39 +82,39 @@ class TranscriptStructurer:
 
             <question>
             Introduction:
-            [the situation setup in japanese]
+            [the situation setup in Arabic]
             
             Conversation:
-            [the dialogue in japanese]
+            [the dialogue in Arabic]
             
             Question:
-            [the question being asked in japanese]
+            [the question being asked in Arabic]
             </question>
 
             Rules:
-            - Only extract questions from the 問題2 section
+            - Only extract questions from the القسم 2 section
             - Only include questions where answers can be determined from dialogue alone
-            - Ignore any practice examples (marked with 例)
-            - Do not translate any Japanese text
+            - Ignore any practice examples (marked with مثال)
+            - Do not translate any Arabic text
             - Do not include any section descriptions or other text
             - Output questions one after another with no extra text between them
             """,
             
-            3: """Extract all questions from section 問題3 of this JLPT transcript.
+            3: """Extract all questions from section القسم 3 of this Arabic transcript.
             Format each question exactly like this:
 
             <question>
             Situation:
-            [the situation in japanese where a phrase is needed]
+            [the situation in Arabic where a phrase is needed]
             
             Question:
-            何と言いますか
+            ماذا تقول في هذا الموقف؟
             </question>
 
             Rules:
-            - Only extract questions from the 問題3 section
-            - Ignore any practice examples (marked with 例)
-            - Do not translate any Japanese text
+            - Only extract questions from the القسم 3 section
+            - Ignore any practice examples (marked with مثال)
+            - Do not translate any Arabic text
             - Do not include any section descriptions or other text
             - Output questions one after another with no extra text between them
             """
