@@ -12,11 +12,11 @@ class AudioGenerator:
         self.polly = boto3.client('polly', region_name="us-east-1")
         self.model_id = "amazon.nova-micro-v1:0"
         
-        # Define Japanese neural voices by gender
+        # Define Arabic voices by gender
         self.voices = {
-            'male': ['Takumi'],
-            'female': ['Kazuha'],
-            'announcer': 'Takumi'  # Default announcer voice
+            'male': ['Zayd'],
+            'female': ['Zeina'],
+            'announcer': 'Zayd'  # Default announcer voice
         }
         
         # Create audio output directory
@@ -81,9 +81,9 @@ class AudioGenerator:
                 print(f"Error: Invalid gender in part {i+1}: {gender}")
                 return False
                 
-            # Check text contains Japanese characters
-            if not any('\u4e00' <= c <= '\u9fff' or '\u3040' <= c <= '\u309f' or '\u30a0' <= c <= '\u30ff' for c in text):
-                print(f"Error: Text does not contain Japanese characters in part {i+1}")
+            # Check text contains Arabic characters
+            if not any('\u0600' <= c <= '\u06FF' for c in text):
+                print(f"Error: Text does not contain Arabic characters in part {i+1}")
                 return False
         
         return True
@@ -98,7 +98,7 @@ class AudioGenerator:
             try:
                 # Ask Nova to parse the conversation and assign speakers and genders
                 prompt = f"""
-                You are a JLPT listening test audio script generator. Format the following question for audio generation.
+                You are an Arabic language test audio script generator. Format the following question for audio generation.
 
                 Rules:
                 1. Introduction and Question parts:
@@ -113,15 +113,15 @@ class AudioGenerator:
 
                 Format each part EXACTLY like this, with no variations:
                 Speaker: [name] (Gender: male)
-                Text: [Japanese text]
+                Text: [Arabic text]
                 ---
 
                 Example format:
                 Speaker: Announcer (Gender: male)
-                Text: 次の会話を聞いて、質問に答えてください。
+                Text: استمع إلى المحادثة التالية وأجب عن السؤال
                 ---
                 Speaker: Student (Gender: female)
-                Text: すみません、この電車は新宿駅に止まりますか。
+                Text: عفواً، هل تتوقف هذه الحافلة عند المحطة التالية؟
                 ---
 
                 Question to format:
@@ -159,18 +159,12 @@ class AudioGenerator:
                             gender_part = speaker_part.split('Gender:')[1].split(')')[0].strip().lower()
                             
                             # Normalize gender
-                            if '男' in gender_part or 'male' in gender_part:
+                            if gender_part in ['male', 'ذكر']:
                                 current_gender = 'male'
-                            elif '女' in gender_part or 'female' in gender_part:
+                            elif gender_part in ['female', 'أنثى']:
                                 current_gender = 'female'
                             else:
                                 raise ValueError(f"Invalid gender format: {gender_part}")
-                            
-                            # Infer gender from speaker name for consistency
-                            if current_speaker.lower() in ['female', 'woman', 'girl', 'lady', '女性']:
-                                current_gender = 'female'
-                            elif current_speaker.lower() in ['male', 'man', 'boy', '男性']:
-                                current_gender = 'male'
                             
                             # Check for gender consistency
                             if current_speaker in speaker_genders:
@@ -212,9 +206,9 @@ class AudioGenerator:
     def get_voice_for_gender(self, gender: str) -> str:
         """Get an appropriate voice for the given gender"""
         if gender == 'male':
-            return 'Takumi'  # Male voice
+            return 'Zayd'  # Male voice
         else:
-            return 'Kazuha'  # Female voice
+            return 'Zeina'  # Female voice
 
     def generate_audio_part(self, text: str, voice_name: str) -> str:
         """Generate audio for a single part using Amazon Polly"""
@@ -223,7 +217,7 @@ class AudioGenerator:
             OutputFormat='mp3',
             VoiceId=voice_name,
             Engine='neural',
-            LanguageCode='ja-JP'
+            LanguageCode='arb'  # Arabic language code
         )
         
         # Save to temporary file
@@ -231,6 +225,8 @@ class AudioGenerator:
             temp_file.write(response['AudioStream'].read())
             return temp_file.name
 
+    # The rest of the methods remain the same as they handle audio processing
+    # and don't need language-specific changes
     def combine_audio_files(self, audio_files: List[str], output_file: str):
         """Combine multiple audio files using ffmpeg"""
         file_list = None
@@ -287,53 +283,43 @@ class AudioGenerator:
         output_file = os.path.join(self.audio_dir, f"question_{timestamp}.mp3")
         
         try:
-            # Parse conversation into parts
             parts = self.parse_conversation(question)
-            
-            # Generate audio for each part
             audio_parts = []
             current_section = None
             
-            # Generate silence files for pauses
-            long_pause = self.generate_silence(2000)  # 2 second pause
-            short_pause = self.generate_silence(500)  # 0.5 second pause
+            long_pause = self.generate_silence(2000)
+            short_pause = self.generate_silence(500)
             
             for speaker, text, gender in parts:
-                # Detect section changes and add appropriate pauses
                 if speaker.lower() == 'announcer':
-                    if '次の会話' in text:  # Introduction
+                    if 'استمع' in text:  # Arabic intro marker
                         if current_section is not None:
                             audio_parts.append(long_pause)
                         current_section = 'intro'
-                    elif '質問' in text or '選択肢' in text:  # Question or options
+                    elif 'السؤال' in text or 'الخيارات' in text:  # Arabic question/options marker
                         audio_parts.append(long_pause)
                         current_section = 'question'
                 elif current_section == 'intro':
                     audio_parts.append(long_pause)
                     current_section = 'conversation'
                 
-                # Get appropriate voice for this speaker
                 voice = self.get_voice_for_gender(gender)
                 print(f"Using voice {voice} for {speaker} ({gender})")
                 
-                # Generate audio for this part
                 audio_file = self.generate_audio_part(text, voice)
                 if not audio_file:
                     raise Exception("Failed to generate audio part")
                 audio_parts.append(audio_file)
                 
-                # Add short pause between conversation turns
                 if current_section == 'conversation':
                     audio_parts.append(short_pause)
             
-            # Combine all parts into final audio
             if not self.combine_audio_files(audio_parts, output_file):
                 raise Exception("Failed to combine audio files")
             
             return output_file
             
         except Exception as e:
-            # Clean up the output file if it exists
             if os.path.exists(output_file):
                 os.unlink(output_file)
             raise Exception(f"Audio generation failed: {str(e)}")
