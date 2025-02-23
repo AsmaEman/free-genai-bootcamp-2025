@@ -182,3 +182,7 @@ env/
 # Logs and temporary files
 *.log
 *.tmp
+
+# Audio generation
+frontend/static/audio/
+temp/
