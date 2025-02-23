@@ -2,7 +2,7 @@ import boto3
 import json
 from typing import Dict, List, Optional
 from backend.vector_store import QuestionVectorStore
-
+from .transcript_extractor import ArabicTranscriptExtractor
 class QuestionGenerator:
     def __init__(self):
         """Initialize Bedrock client and vector store"""
@@ -40,7 +40,7 @@ class QuestionGenerator:
             return None
         
         # Create context from similar questions
-        context = "Here are some example JLPT listening questions:\n\n"
+        context = "Here are some example Arabic listening questions:\n\n"
         for idx, q in enumerate(similar_questions, 1):
             if section_num == 2:
                 context += f"Example {idx}:\n"
@@ -62,15 +62,15 @@ class QuestionGenerator:
             context += "\n"
 
         # Create prompt for generating new question
-        prompt = f"""Based on the following example JLPT listening questions, create a new question about {topic}.
-        The question should follow the same format but be different from the examples.
-        Make sure the question tests listening comprehension and has a clear correct answer.
+        prompt = f"""Based on the following Arabic listening question examples, create a new question about {topic}.
+        The question should follow the same pattern but be different from the examples.
+        Ensure the question tests listening comprehension and has a clear correct answer.
         
         {context}
         
-        Generate a new question following the exact same format as above. Include all components (Introduction/Situation, 
-        Conversation/Question, and Options). Make sure the question is challenging but fair, and the options are plausible 
-        but with only one clearly correct answer. Return ONLY the question without any additional text.
+        Create a new question following exactly the same pattern shown above. Include all components (Introduction/Situation, 
+        Conversation/Question, and Options). Make sure the question is challenging but fair, and the options are reasonable 
+        with one clear correct answer. Return only the question without any additional text.
         
         New Question:
         """
@@ -132,10 +132,10 @@ class QuestionGenerator:
             if 'Options' not in question or len(question.get('Options', [])) != 4:
                 # Use default options if we don't have exactly 4
                 question['Options'] = [
-                    "ピザを食べる",
-                    "ハンバーガーを食べる",
-                    "サラダを食べる",
-                    "パスタを食べる"
+                    "نعم",  # Yes
+                    "لا",   # No
+                    "ربما",  # Maybe
+                    "غير متأكد"  # Not sure
                 ]
             
             return question
@@ -149,8 +149,8 @@ class QuestionGenerator:
             return None
 
         # Create prompt for generating feedback
-        prompt = f"""Given this JLPT listening question and the selected answer, provide feedback explaining if it's correct 
-        and why. Keep the explanation clear and concise.
+        prompt = f"""Based on the following listening question and selected answer, provide feedback on whether it is correct 
+        and why. Make the explanation clear and concise.
         
         """
         if 'Introduction' in question:
@@ -165,10 +165,10 @@ class QuestionGenerator:
             prompt += f"{i}. {opt}\n"
         
         prompt += f"\nSelected Answer: {selected_answer}\n"
-        prompt += "\nProvide feedback in JSON format with these fields:\n"
+        prompt += "\nProvide feedback in JSON format with the following fields:\n"
         prompt += "- correct: true/false\n"
         prompt += "- explanation: brief explanation of why the answer is correct/incorrect\n"
-        prompt += "- correct_answer: the number of the correct option (1-4)\n"
+        prompt += "- correct_answer: number of the correct option (1-4)\n"
 
         # Get feedback
         response = self._invoke_bedrock(prompt)
@@ -180,9 +180,9 @@ class QuestionGenerator:
             feedback = json.loads(response.strip())
             return feedback
         except:
-            # If JSON parsing fails, return a basic response with a default correct answer
+            # If JSON parsing fails, return a basic response
             return {
                 "correct": False,
-                "explanation": "Unable to generate detailed feedback. Please try again.",
+                "explanation": "Sorry, we couldn't generate detailed feedback. Please try again.",
                 "correct_answer": 1  # Default to first option
             }
