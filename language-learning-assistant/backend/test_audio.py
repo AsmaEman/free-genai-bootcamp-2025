@@ -6,19 +6,19 @@ from backend.audio_generator import AudioGenerator
 
 # Test question data
 test_question = {
-    "Introduction": "次の会話を聞いて、質問に答えてください。",
+    "Introduction": "استمع إلى المحادثة التالية وأجب عن السؤال",  # Listen to the following conversation and answer the question
     "Conversation": """
-    男性: すみません、この電車は新宿駅に止まりますか。
-    女性: はい、次の駅が新宿です。
-    男性: ありがとうございます。何分くらいかかりますか。
-    女性: そうですね、5分くらいです。
+    الرجل: عفواً، هل تتوقف هذه الحافلة عند محطة المترو؟
+    المرأة: نعم، المحطة القادمة هي محطة المترو
+    الرجل: شكراً لك. كم من الوقت سيستغرق؟
+    المرأة: حوالي خمس دقائق
     """,
-    "Question": "新宿駅まで何分かかりますか。",
+    "Question": "كم من الوقت يستغرق الوصول إلى محطة المترو؟",  # How long does it take to reach the metro station?
     "Options": [
-        "3分です。",
-        "5分です。",
-        "10分です。",
-        "15分です。"
+        "ثلاث دقائق",      # Three minutes
+        "خمس دقائق",       # Five minutes
+        "عشر دقائق",       # Ten minutes
+        "خمسة عشر دقيقة"   # Fifteen minutes
     ]
 }
 
