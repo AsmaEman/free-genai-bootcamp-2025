@@ -10,7 +10,7 @@ from backend.audio_generator import AudioGenerator
 
 # Page config
 st.set_page_config(
-    page_title="JLPT Listening Practice",
+    page_title="Arabic Listening Practice",  # Arabic Language Learning Assistant
     page_icon="🎧",
     layout="wide"
 )
@@ -245,7 +245,7 @@ def render_interactive_stage():
         st.info("Click 'Generate New Question' to start practicing!")
 
 def main():
-    st.title("JLPT Listening Practice")
+    st.title("Arabic Listening Practice")
     render_interactive_stage()
 
 if __name__ == "__main__":
