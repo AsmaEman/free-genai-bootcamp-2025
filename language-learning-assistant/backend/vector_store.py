@@ -33,7 +33,7 @@ class BedrockEmbeddingFunction(embedding_functions.EmbeddingFunction):
 
 class QuestionVectorStore:
     def __init__(self, persist_directory: str = "backend/data/vectorstore"):
-        """Initialize the vector store for JLPT listening questions"""
+        """Initialize the vector store for Arabic listening questions"""
         self.persist_directory = persist_directory
         
         # Initialize ChromaDB client
@@ -47,12 +47,12 @@ class QuestionVectorStore:
             "section2": self.client.get_or_create_collection(
                 name="section2_questions",
                 embedding_function=self.embedding_fn,
-                metadata={"description": "JLPT listening comprehension questions - Section 2"}
+                metadata={"description": "Arabic listening comprehension questions - Section 2"}
             ),
             "section3": self.client.get_or_create_collection(
                 name="section3_questions",
                 embedding_function=self.embedding_fn,
-                metadata={"description": "JLPT phrase matching questions - Section 3"}
+                metadata={"description": "Arabic phrase matching questions - Section 3"}
             )
         }
 
@@ -221,4 +221,4 @@ if __name__ == "__main__":
             store.index_questions_file(filename, section_num)
     
     # Search for similar questions
-    similar = store.search_similar_questions(2, "誕生日について質問", n_results=1)
+    similar = store.search_similar_questions(2, "سؤال عن الطقس", n_results=1)  # Example Arabic query about weather
