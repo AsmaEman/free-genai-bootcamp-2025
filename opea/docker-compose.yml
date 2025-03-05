@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"  # Orchestrator
+      - "5001:5001"  # Speech Recognition
+      - "5002:5002"  # Text Generation
+      - "5003:5003"  # TTS
+    environment:
+      - REDIS_HOST=redis
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
