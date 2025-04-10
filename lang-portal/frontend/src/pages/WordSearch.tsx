@@ -32,7 +32,10 @@ const WordSearch = () => {
           <div className="h-full">
             <Header />
             <main className="p-6">
-              <h2 className="text-2xl font-bold mb-6 text-primary">Word Search</h2>
+              <h2 className="text-2xl font-bold mb-6 text-primary">Arabic Dictionary</h2>
+              <p className="text-muted-foreground mb-6">
+                Search for Arabic words, their translations, and examples. Enter any word in Arabic or English to find detailed information including pronunciation and example sentences.
+              </p>
               <WordSearchComponent />
             </main>
           </div>
