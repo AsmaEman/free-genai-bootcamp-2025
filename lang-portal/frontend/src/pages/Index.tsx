@@ -162,8 +162,130 @@ const Index = () => {
     }
   };
 
-  if (!user) return null;
-
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center relative overflow-hidden">
+        {/* Decorative Arabic pattern overlay */}
+        <div className="absolute inset-0 bg-[url('/arabic-pattern.svg')] opacity-5"></div>
+        
+        {/* Floating Arabic letters animation with blue glow effect */}
+        <div className="absolute inset-0 overflow-hidden">
+          {['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر'].map((letter, index) => (
+            <div 
+              key={index}
+              className="absolute text-4xl text-sky-400 opacity-20"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animation: `float ${3 + Math.random() * 5}s infinite ease-in-out ${Math.random() * 2}s`,
+                filter: 'blur(1px) drop-shadow(0 0 5px rgba(56, 189, 248, 0.5))'
+              }}
+            >
+              {letter}
+            </div>
+          ))}
+        </div>
+        
+        <div className="relative z-10 max-w-3xl mx-auto px-4 text-center space-y-8">
+          {/* Logo or icon */}
+          <div className="mb-6 flex justify-center">
+            <div className="h-24 w-24 rounded-full bg-gradient-to-br from-sky-400 to-sky-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
+              <span className="text-white text-4xl font-arabic">ع</span>
+            </div>
+          </div>
+          
+          <h1 className="text-5xl font-bold tracking-tighter text-white">
+            <span className="font-arabic">تعلم العربية</span>
+            <span className="block mt-2">Welcome back</span>
+          </h1>
+          
+          <p className="text-xl text-gray-300">
+            Embark on a journey through the rich tapestry of Arabic language and culture
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-12">
+            <div className="bg-gray-900 bg-opacity-70 p-6 rounded-xl border border-sky-500/30 shadow-lg hover:shadow-sky-500/20 transition-all duration-300 group">
+              <div className="text-sky-400 mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-gray-800 group-hover:bg-gray-700 transition-colors">
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 18.5C15.5 18.5 18.5 15.5 18.5 12C18.5 8.5 15.5 5.5 12 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M19.5 4.5L4.5 19.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M9 9C9 9 10 10 12 10C14 10 15 9 15 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h3 className="font-bold text-lg mb-2 text-white">Interactive Lessons</h3>
+              <p className="text-gray-300">Learn through conversation with native speakers</p>
+            </div>
+            
+            <div className="bg-gray-900 bg-opacity-70 p-6 rounded-xl border border-sky-500/30 shadow-lg hover:shadow-sky-500/20 transition-all duration-300 group">
+              <div className="text-sky-400 mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-gray-800 group-hover:bg-gray-700 transition-colors">
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M17 10H7C4.79086 10 3 11.7909 3 14V17C3 19.2091 4.79086 21 7 21H17C19.2091 21 21 19.2091 21 17V14C21 11.7909 19.2091 10 17 10Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 15L11 16L12 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M16 15L17 16L16 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 4C12 4 9 4 8.5 6C8.5 6 8 7.2 8 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M16 9C16 9 16 7.2 15.5 6C15 4 12 4 12 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h3 className="font-bold text-lg mb-2 text-white">Gamified Practice</h3>
+              <p className="text-gray-300">Master Arabic through fun daily challenges</p>
+            </div>
+            
+            <div className="bg-gray-900 bg-opacity-70 p-6 rounded-xl border border-sky-500/30 shadow-lg hover:shadow-sky-500/20 transition-all duration-300 group">
+              <div className="text-sky-400 mb-3 flex items-center justify-center w-12 h-12 rounded-full bg-gray-800 group-hover:bg-gray-700 transition-colors">
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 19V5C4 3.89543 4.89543 3 6 3H19.4C19.7314 3 20 3.26863 20 3.6V16.7143" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  <path d="M16 8.77975C16 9.38118 15.7625 9.95883 15.3383 10.3861C14.3619 11.3701 13.415 12.3961 12.4021 13.3443C12.17 13.5605 11.8017 13.5589 11.5715 13.3407C10.5699 12.3952 9.64382 11.3701 8.67448 10.3886C8.24446 9.95212 8 9.36968 8 8.75498C8 7.50608 8.99473 6.5 10.2272 6.5C11.0611 6.5 11.7936 6.93533 12.2183 7.59339C12.4347 7.94581 12.9752 7.94581 13.1915 7.59339C13.6162 6.93533 14.3487 6.5 15.1826 6.5C16.4151 6.5 17.4098 7.50608 17.4098 8.75498C17.4098 8.76358 17.4096 8.77218 17.4092 8.78078" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  <path d="M6 17L20 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  <path d="M6 21L20 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  <path d="M6 21C4.89543 21 4 20.1046 4 19C4 17.8954 4.89543 17 6 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h3 className="font-bold text-lg mb-2 text-white">Cultural Immersion</h3>
+              <p className="text-gray-300">Discover stories, music, and traditions</p>
+            </div>
+          </div>
+          
+          <div className="space-y-6">
+            <Button 
+              onClick={() => navigate('/auth')}
+              className="px-8 py-3 text-lg font-medium bg-gradient-to-r from-sky-500 to-sky-700 hover:from-sky-600 hover:to-sky-800 text-white rounded-lg shadow-lg shadow-sky-500/20 transform transition hover:-translate-y-1"
+            >
+              Sign In
+            </Button>
+            
+            <p className="text-gray-400 text-sm">
+              Join over 1 student already learning Arabic with us
+            </p>
+          </div>
+        </div>
+        
+        {/* Add global styles for the animations */}
+        <style jsx global>{`
+          @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+          }
+          
+          .font-arabic {
+            font-family: 'Noto Sans Arabic', sans-serif;
+          }
+          
+          /* Add a modern glassmorphism effect to elements */
+          .glassmorphism {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+          }
+        `}</style>
+        
+        {/* Don't have an account? Link */}
+        <div className="absolute bottom-8 text-center">
+          <p className="text-gray-400">
+            Don't have an account? <a href="/signup" className="text-sky-400 hover:text-sky-300 font-medium">Sign up</a>
+          </p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-background">
       <ResizablePanelGroup direction="horizontal">
