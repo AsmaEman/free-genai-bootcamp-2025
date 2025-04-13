@@ -18,8 +18,10 @@ An innovative, interactive platform for mastering Arabic vocabulary and conversa
 
 https://github.com/user-attachments/assets/d34df480-7a61-43ae-af53-433d850c5dbf
 
-https://github.com/user-attachments/assets/8218eaa3-3a08-490a-adae-20e8d16cdc99
-
+<!--ARCADE EMBED START-->
+<div style="position: relative; padding-bottom: calc(45.27777777777778% + 41px); height: 0; width: 100%;"><iframe src="https://demo.arcade.software/hAX8pAY7e1blGYiaqKbQ?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="Explore Arabic Language Learning Features" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;" ></iframe></div>
+<!--ARCADE EMBED END-->
+https://vocabulary-learner-red.vercel.app/
 
 
 https://app.arcade.software/share/hAX8pAY7e1blGYiaqKbQ
