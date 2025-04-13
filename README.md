@@ -87,9 +87,11 @@ Modern web browser
 Environment Setup
 Create .env file in root directory
 
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_key
-VITE_API_BASE_URL=your_api_url
+-VITE_SUPABASE_URL=your_supabase_url
+
+-VITE_SUPABASE_ANON_KEY=your_supabase_key
+
+-VITE_API_BASE_URL=your_api_url
 
 env
 Configure database
@@ -128,27 +130,27 @@ Supabase
 RESTful APIs
 
 Project Structure
-src/
-├── components/          # Reusable UI components
-│   ├── common/         # Shared components
-│   ├── forms/          # Form-related components
-│   └── layouts/        # Layout components
-├── features/           # Feature-specific components
-│   ├── auth/          # Authentication
-│   ├── vocabulary/    # Vocabulary management
-│   └── practice/      # Practice exercises
-├── hooks/             # Custom React hooks
-├── lib/               # Utility functions
-├── styles/           # Global styles
-└── types/            # TypeScript definitions
+- src/
+- ├── components/          # Reusable UI components
+- │   ├── common/         # Shared components
+- │   ├── forms/          # Form-related components
+- │   └── layouts/        # Layout components
+- ├── features/           # Feature-specific components
+- │   ├── auth/          # Authentication
+- │   ├── vocabulary/    # Vocabulary management
+- │   └── practice/      # Practice exercises
+- ├── hooks/             # Custom React hooks
+- ├── lib/               # Utility functions
+- ├── styles/           # Global styles
+- └── types/            # TypeScript definitions
 
 
 Available Scripts
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run preview      # Preview production build
-npm run lint         # Lint code
-npm run test         # Run tests
+- npm run dev          # Start development server
+- npm run build        # Build for production
+- npm run preview      # Preview production build
+- npm run lint         # Lint code
+- npm run test         # Run tests
 
 
 🔧 Configuration
