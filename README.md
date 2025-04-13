@@ -1,15 +1,22 @@
 
-## 🔥 Live Demos
-
 <div align="center">
 
-<img  width="290px" alt="Production Demo"/><br/>
-<sub><b>Production Demo</b></sub>
-       
-    
+# 🎯 Arabic Vocabulary Learning Platform
 
+An innovative, interactive platform for mastering Arabic vocabulary and conversation skills.
 
-https://github.com/user-attachments/assets/d34df480-7a61-43ae-af53-433d850c5dbf)
+[Features](#features) • [Quick Start](#quick-start) • [Installation](#installation) • [Documentation](#documentation)
+
+![License](https://img.shields.io/badge/license-MIT-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-green)
+![Node](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)
+
+</div>
+
+---
+## 🔥 Live Demos
+
+https://github.com/user-attachments/assets/d34df480-7a61-43ae-af53-433d850c5dbf
 
 https://github.com/user-attachments/assets/8218eaa3-3a08-490a-adae-20e8d16cdc99
 
@@ -26,22 +33,6 @@ https://vocabulary-learner-red.vercel.app/
 
 </div>
 
-
-<div align="center">
-
-# 🎯 Arabic Vocabulary Learning Platform
-
-An innovative, interactive platform for mastering Arabic vocabulary and conversation skills.
-
-[Features](#features) • [Quick Start](#quick-start) • [Installation](#installation) • [Documentation](#documentation)
-
-![License](https://img.shields.io/badge/license-MIT-blue)
-![Version](https://img.shields.io/badge/version-1.0.0-green)
-![Node](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)
-
-</div>
-
----
 
 ## ✨ Features
 
