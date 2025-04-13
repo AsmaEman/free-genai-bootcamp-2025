@@ -18,9 +18,88 @@ An innovative, interactive platform for mastering Arabic vocabulary and conversa
 
 https://github.com/user-attachments/assets/d34df480-7a61-43ae-af53-433d850c5dbf
 
-<!--ARCADE EMBED START-->
-<div style="position: relative; padding-bottom: calc(45.27777777777778% + 41px); height: 0; width: 100%;"><iframe src="https://demo.arcade.software/hAX8pAY7e1blGYiaqKbQ?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="Explore Arabic Language Learning Features" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;" ></iframe></div>
-<!--ARCADE EMBED END-->
+<div align="center">
+
+# 🎯 Arabic Learning Hub
+
+An innovative, interactive platform for mastering Arabic vocabulary and conversation skills.
+
+## 🎮 Interactive Demo
+
+[![Arabic Learning Hub Demo](https://your-preview-image.png)](https://demo.arcade.software/hAX8pAY7e1blGYiaqKbQ?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true)
+
+[▶️ Click to Try Interactive Demo](https://demo.arcade.software/hAX8pAY7e1blGYiaqKbQ?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true)
+
+---
+
+### 🎥 Demo Preview
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="demo-screenshot1.png" width="400px" alt="Feature Preview 1"/>
+      </td>
+      <td align="center">
+        <img src="demo-screenshot2.png" width="400px" alt="Feature Preview 2"/>
+      </td>
+    </tr>
+  </table>
+</div>
+
+### ✨ Try Our Interactive Demo
+- 🔥 Explore the full feature set
+- 🎯 Test vocabulary learning tools
+- 💡 Experience real-time interactions
+- 🌟 See progress tracking in action
+
+[View Full Demo Documentation](link-to-demo-docs)
+
+</div>
+
+
+Copy
+
+Insert at cursor
+markdown
+For better integration, you could also add a demo section in your features area:
+
+## 🚀 Features
+
+### 📺 Interactive Demo Experience
+Try our platform features:
+- [🎮 Live Interactive Demo](https://demo.arcade.software/hAX8pAY7e1blGYiaqKbQ?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true)
+- [🎥 Video Walkthrough](your-video-link)
+- [📚 Demo Documentation](your-docs-link)
+
+
+Copy
+
+Insert at cursor
+markdown
+To make it even more engaging, you can add a "Demo" section in your documentation:
+
+## 🎮 Demo & Previews
+
+### Interactive Demo
+Our interactive demo showcases the key features of the Arabic Learning Hub:
+
+<div align="center">
+  <a href="https://demo.arcade.software/hAX8pAY7e1blGYiaqKbQ?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true">
+    <img src="path-to-demo-preview.gif" width="600px" alt="Interactive Demo Preview"/>
+  </a>
+</div>
+https://demo.arcade.software/hAX8pAY7e1blGYiaqKbQ?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true
+### How to Use the Demo
+1. 🖱️ Click the preview image or [this link](https://demo.arcade.software/hAX8pAY7e1blGYiaqKbQ?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true)
+2. 🎯 Explore different features
+3. ✨ Try out the interactive elements
+4. 📝 Test the vocabulary tools
+
+### Demo Features
+- ✅ Full vocabulary management system
+- ✅ Interactive learning tools
+- ✅ Progress tracking
+- ✅ User interface walkthrough
 https://vocabulary-learner-red.vercel.app/
 
 
