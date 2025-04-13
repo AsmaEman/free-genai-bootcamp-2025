@@ -1,49 +1,25 @@
-https://app.arcade.software/share/hAX8pAY7e1blGYiaqKbQ
+
+## 🔥 Live Demos
+
+<div align="center">
+
+<img  width="290px" alt="Production Demo"/><br/>
+<sub><b>Production Demo</b></sub>
+       
+    
 
 
+https://github.com/user-attachments/assets/d34df480-7a61-43ae-af53-433d850c5dbf)
 
 https://github.com/user-attachments/assets/8218eaa3-3a08-490a-adae-20e8d16cdc99
 
 
 
-https://github.com/user-attachments/assets/d34df480-7a61-43ae-af53-433d850c5dbf
-## 🔥 Live Demos
+https://app.arcade.software/share/hAX8pAY7e1blGYiaqKbQ
 
-<div align="center">
-  <table>
-    <tr>
-      <td align="center">
-        <a href="https://demo1-url.com">
-          <img src="path-to-demo1-screenshot.png" width="290px" alt="Production Demo"/><br/>
-          <sub><b>Production Demo</b></sub>
-        </a>
-        <br />
-        <a href="https://github.com/user-attachments/assets/8218eaa3-3a08-490a-adae-20e8d16cdc99">
-          <img src="https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge" />
-        </a>
-      </td>
-      <td align="center">
-        <a href="https://github.com/user-attachments/assets/d34df480-7a61-43ae-af53-433d850c5dbf">
-          <img src="path-to-demo2-screenshot.png" width="290px" alt="Staging Demo"/><br/>
-          <sub><b>Staging Demo</b></sub>
-        </a>
-        <br />
-        <a href="https://github.com/user-attachments/assets/d34df480-7a61-43ae-af53-433d850c5dbf">
-          <img src="https://img.shields.io/badge/Live-Staging-orange?style=for-the-badge" />
-        </a>
-      </td>
-      <td align="center">
-        <a href="https://demo3-url.com">
-          <img src="path-to-demo3-screenshot.png" width="290px" alt="Development Demo"/><br/>
-          <sub><b>Development Demo</b></sub>
-        </a>
-        <br />
-        <a href="https://demo3-url.com">
-          <img src="https://img.shields.io/badge/Live-Development-blue?style=for-the-badge" />
-        </a>
-      </td>
-    </tr>
-  </table>
+
+https://vocabulary-learner-red.vercel.app/
+
 </div>
 
 ---
@@ -53,7 +29,7 @@ https://github.com/user-attachments/assets/d34df480-7a61-43ae-af53-433d850c5dbf
 
 <div align="center">
 
-# 🎯 Arabic Learning 
+# 🎯 Arabic Vocabulary Learning Platform
 
 An innovative, interactive platform for mastering Arabic vocabulary and conversation skills.
 
