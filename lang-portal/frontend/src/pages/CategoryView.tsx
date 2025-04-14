@@ -1,16 +1,127 @@
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Volume2, Tag, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type Vocabulary = Database['public']['Tables']['vocabulary']['Row'];
 type Category = Database['public']['Tables']['categories']['Row'];
+
+const mockVocabularyData: Record<string, Vocabulary[]> = {
+  '1f3c89b2-f17e-4c11-b1e1-156485e724b2': [
+    {
+      id: '101',
+      arabic_word: 'مرحبا',
+      english_translation: 'Hello',
+      transliteration: 'Marhaba',
+      category_id: '1f3c89b2-f17e-4c11-b1e1-156485e724b2',
+      difficulty_level: 1,
+      tags: ['greeting', 'basic'],
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: '102',
+      arabic_word: 'السلام عليكم',
+      english_translation: 'Peace be upon you',
+      transliteration: 'As-salaam-alaikum',
+      category_id: '1f3c89b2-f17e-4c11-b1e1-156485e724b2',
+      difficulty_level: 1,
+      tags: ['greeting', 'formal'],
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: '103',
+      arabic_word: 'صباح الخير',
+      english_translation: 'Good morning',
+      transliteration: 'Sabah al-khair',
+      category_id: '1f3c89b2-f17e-4c11-b1e1-156485e724b2',
+      difficulty_level: 1,
+      tags: ['greeting', 'morning'],
+      created_at: new Date().toISOString(),
+      example_sentence: 'صباح الخير، كيف حالك؟',
+    },
+    {
+      id: '104',
+      arabic_word: 'مساء الخير',
+      english_translation: 'Good evening',
+      transliteration: 'Masaa al-khair',
+      category_id: '1f3c89b2-f17e-4c11-b1e1-156485e724b2',
+      difficulty_level: 1,
+      tags: ['greeting', 'evening'],
+      created_at: new Date().toISOString(),
+    },
+  ],
+  '2a7d8f4e-b3c9-4d5a-a6b7-894e2c3f1d5a': [
+    {
+      id: '201',
+      arabic_word: 'أب',
+      english_translation: 'Father',
+      transliteration: 'Ab',
+      category_id: '2a7d8f4e-b3c9-4d5a-a6b7-894e2c3f1d5a',
+      difficulty_level: 1,
+      tags: ['family', 'basic'],
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: '202',
+      arabic_word: 'أم',
+      english_translation: 'Mother',
+      transliteration: 'Um',
+      category_id: '2a7d8f4e-b3c9-4d5a-a6b7-894e2c3f1d5a',
+      difficulty_level: 1,
+      tags: ['family', 'basic'],
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: '203',
+      arabic_word: 'أخ',
+      english_translation: 'Brother',
+      transliteration: 'Akh',
+      category_id: '2a7d8f4e-b3c9-4d5a-a6b7-894e2c3f1d5a',
+      difficulty_level: 1,
+      tags: ['family', 'basic'],
+      created_at: new Date().toISOString(),
+      example_sentence: 'هذا أخي الكبير.',
+    },
+    {
+      id: '204',
+      arabic_word: 'أخت',
+      english_translation: 'Sister',
+      transliteration: 'Ukht',
+      category_id: '2a7d8f4e-b3c9-4d5a-a6b7-894e2c3f1d5a',
+      difficulty_level: 1,
+      tags: ['family', 'basic'],
+      created_at: new Date().toISOString(),
+    },
+  ],
+};
+
+const mockCategories: Record<string, Category> = {
+  '1f3c89b2-f17e-4c11-b1e1-156485e724b2': {
+    id: '1f3c89b2-f17e-4c11-b1e1-156485e724b2',
+    name: 'Greetings',
+    description: 'Common Arabic greetings and expressions',
+    created_at: new Date().toISOString(),
+    icon: null
+  },
+  '2a7d8f4e-b3c9-4d5a-a6b7-894e2c3f1d5a': {
+    id: '2a7d8f4e-b3c9-4d5a-a6b7-894e2c3f1d5a',
+    name: 'Family',
+    description: 'Family members and relationships',
+    created_at: new Date().toISOString(),
+    icon: null
+  },
+  '3b9e7a5c-d2f8-4e6b-b9c8-123a4b5c6d7e': {
+    id: '3b9e7a5c-d2f8-4e6b-b9c8-123a4b5c6d7e',
+    name: 'Food',
+    description: 'Food, drinks, and dining vocabulary',
+    created_at: new Date().toISOString(),
+    icon: null
+  },
+};
 
 const CategoryView = () => {
   const { categoryId } = useParams();
@@ -26,30 +137,26 @@ const CategoryView = () => {
   useEffect(() => {
     const fetchCategoryAndVocabulary = async () => {
       try {
-        // Fetch category details
-        const { data: categoryData, error: categoryError } = await supabase
-          .from('categories')
-          .select('*')
-          .eq('id', categoryId)
-          .single();
+        setTimeout(() => {
+          if (!categoryId) {
+            throw new Error("Category ID is missing");
+          }
 
-        if (categoryError) throw categoryError;
-        setCategory(categoryData);
+          const categoryData = mockCategories[categoryId];
+          if (!categoryData) {
+            throw new Error("Category not found");
+          }
+          setCategory(categoryData);
 
-        // Fetch vocabulary for this category
-        const { data: vocabularyData, error: vocabularyError } = await supabase
-          .from('vocabulary')
-          .select('*')
-          .eq('category_id', categoryId)
-          .order('difficulty_level');
+          const vocabularyData = mockVocabularyData[categoryId] || [];
+          setVocabulary(vocabularyData);
 
-        if (vocabularyError) throw vocabularyError;
-        setVocabulary(vocabularyData);
-
-        // Extract all unique tags from the vocabulary
-        const allTags = vocabularyData.flatMap(word => word.tags || []);
-        const uniqueTags = [...new Set(allTags)].sort();
-        setAvailableTags(uniqueTags);
+          const allTags = vocabularyData.flatMap(word => word.tags || []);
+          const uniqueTags = [...new Set(allTags)].sort();
+          setAvailableTags(uniqueTags);
+          
+          setIsLoading(false);
+        }, 800);
       } catch (error: any) {
         toast({
           title: "Error fetching category data",
@@ -57,8 +164,6 @@ const CategoryView = () => {
           variant: "destructive",
         });
         navigate('/vocabulary');
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -95,16 +200,12 @@ const CategoryView = () => {
     );
   };
 
-  // Filter vocabulary based on difficulty and tags
   const filteredVocabulary = vocabulary.filter(word => {
-    // Filter by difficulty level if set
     if (difficultyFilter !== null && word.difficulty_level !== difficultyFilter) {
       return false;
     }
     
-    // Filter by tags if any selected
     if (filterTags.length > 0) {
-      // Check if the word has all the selected tags
       return filterTags.every(tag => word.tags?.includes(tag));
     }
     
@@ -139,7 +240,6 @@ const CategoryView = () => {
           </div>
           <p className="text-muted-foreground mt-1">{category.description}</p>
 
-          {/* Filter controls */}
           <div className="mt-4 flex flex-wrap gap-2">
             <div className="mr-2">
               <span className="text-sm font-medium mr-2">Difficulty:</span>

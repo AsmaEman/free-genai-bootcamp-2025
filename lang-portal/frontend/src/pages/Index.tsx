@@ -260,7 +260,8 @@ const Index = () => {
         </div>
         
         {/* Add global styles for the animations */}
-        <style jsx global>{`
+        <style>
+          {`
           @keyframes float {
             0%, 100% { transform: translateY(0) rotate(0); }
             50% { transform: translateY(-20px) rotate(5deg); }
@@ -275,7 +276,8 @@ const Index = () => {
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
           }
-        `}</style>
+          `}
+        </style>
         
         {/* Don't have an account? Link */}
         <div className="absolute bottom-8 text-center">

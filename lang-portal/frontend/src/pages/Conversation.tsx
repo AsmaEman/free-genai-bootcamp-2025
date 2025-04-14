@@ -15,6 +15,7 @@ import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { Volume2, Mic, MicOff, Send, RefreshCw, MessageSquare } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getRelevantResponse, getRandomResponse } from "@/components/ConversationAI";
 
 interface Message {
   id: string;
@@ -43,75 +44,6 @@ const conversationTopics: ConversationTopic[] = [
   { id: "hobbies", name: "Hobbies & Interests", description: "Share your interests and leisure activities" },
 ];
 
-// Sample Arabic responses based on topics
-const topicResponses: Record<string, string[]> = {
-  greetings: [
-    "مرحباً! كيف حالك اليوم؟",
-    "أهلاً بك! اسمي هو المساعد العربي، ما هو اسمك؟",
-    "السلام عليكم! سعيد بلقائك.",
-    "صباح الخير! هل أنت جديد في تعلم اللغة العربية؟",
-  ],
-  daily: [
-    "ماذا تفعل عادة في الصباح؟",
-    "متى تستيقظ عادة؟",
-    "هل تحب القهوة في الصباح؟",
-    "ما هي خططك لهذا اليوم؟",
-  ],
-  food: [
-    "ما هو طعامك العربي المفضل؟",
-    "هل جربت الكوشري من قبل؟",
-    "هل تفضل الحلويات العربية؟",
-    "أنا أحب الفلافل والحمص، وأنت؟",
-  ],
-  travel: [
-    "هل زرت أي دولة عربية من قبل؟",
-    "أين تود السفر في العالم العربي؟",
-    "كيف يمكنني الوصول إلى المتحف؟",
-    "هل تستطيع إرشادي إلى أقرب محطة مترو؟",
-  ],
-  shopping: [
-    "هل تحب التسوق في الأسواق التقليدية؟",
-    "بكم هذا؟ هل يمكن الحصول على سعر أفضل؟",
-    "أبحث عن هدية تذكارية جميلة، هل لديك اقتراحات؟",
-    "هل تقبلون بطاقات الائتمان؟",
-  ],
-  weather: [
-    "الطقس جميل اليوم، أليس كذلك؟",
-    "هل تفضل الطقس الحار أم البارد؟",
-    "يبدو أنها ستمطر قريباً، هل أحضرت مظلة؟",
-    "فصل الربيع هو فصلي المفضل في السنة، ما هو فصلك المفضل؟",
-  ],
-  family: [
-    "كم عدد أفراد عائلتك؟",
-    "هل لديك إخوة أو أخوات؟",
-    "ما هي الأنشطة التي تحب القيام بها مع عائلتك؟",
-    "هل أنت متزوج؟ هل لديك أطفال؟",
-  ],
-  hobbies: [
-    "ما هي هواياتك المفضلة؟",
-    "هل تحب القراءة؟ ما هو كتابك المفضل؟",
-    "هل تمارس أي رياضة؟",
-    "أنا أحب الطبخ والاستماع إلى الموسيقى، وأنت؟",
-  ],
-};
-
-// English translations for sample responses
-const translations: Record<string, Record<string, string>> = {
-  greetings: {
-    "مرحباً! كيف حالك اليوم؟": "Hello! How are you today?",
-    "أهلاً بك! اسمي هو المساعد العربي، ما هو اسمك؟": "Welcome! My name is the Arabic assistant, what's your name?",
-    "السلام عليكم! سعيد بلقائك.": "Peace be upon you! Nice to meet you.",
-    "صباح الخير! هل أنت جديد في تعلم اللغة العربية؟": "Good morning! Are you new to learning Arabic?",
-  },
-  daily: {
-    "ماذا تفعل عادة في الصباح؟": "What do you usually do in the morning?",
-    "متى تستيقظ عادة؟": "When do you usually wake up?",
-    "هل تحب القهوة في الصباح؟": "Do you like coffee in the morning?",
-    "ما هي خططك لهذا اليوم؟": "What are your plans for today?",
-  },
-  // ... add translations for other topics as needed
-};
-
 const Conversation = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -124,33 +56,7 @@ const Conversation = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const form = useForm<{ message: string }>();
-
-  // Function to get a random response for the current topic
-  const getRandomResponse = (topic: string): string => {
-    const responses = topicResponses[topic] || topicResponses.greetings;
-    return responses[Math.floor(Math.random() * responses.length)];
-  };
-
-  // Function to get translation for a response
-  const getTranslation = (topic: string, text: string): string => {
-    return translations[topic]?.[text] || "Translation not available";
-  };
-
-  // Start conversation with a greeting when component mounts or topic changes
-  useEffect(() => {
-    if (messages.length === 0 || messages[messages.length - 1].sender === 'user') {
-      const initialResponse = getRandomResponse(currentTopic);
-      const newMessage: Message = {
-        id: Date.now().toString(),
-        text: initialResponse,
-        translation: getTranslation(currentTopic, initialResponse),
-        sender: 'assistant',
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, newMessage]);
-    }
-  }, [currentTopic]);
-
+  
   // Auto-scroll to the latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -176,17 +82,11 @@ const Conversation = () => {
     setInput("");
     setIsLoading(true);
 
-    // Simulate AI response delay
+    // Use the getRelevantResponse function to generate a response
     setTimeout(() => {
-      const aiResponse = getRandomResponse(currentTopic);
-      const newAssistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: aiResponse,
-        translation: getTranslation(currentTopic, aiResponse),
-        sender: 'assistant',
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, newAssistantMessage]);
+      // Generate a response based on the user input
+      const aiResponse = getRelevantResponse(input, currentTopic);
+      setMessages(prev => [...prev, aiResponse]);
       setIsLoading(false);
     }, 1000);
   };
@@ -204,6 +104,9 @@ const Conversation = () => {
       title: "Topic Changed",
       description: `Conversation topic set to: ${conversationTopics.find(t => t.id === topic)?.name}`,
     });
+    
+    // Start a new conversation with the AI when topic changes
+    startNewConversation();
   };
 
   const toggleRecording = () => {
@@ -225,19 +128,49 @@ const Conversation = () => {
   };
 
   const handlePlayAudio = (message: Message) => {
-    toast({
-      title: "Playing Audio",
-      description: "Audio pronunciation would play here in a production environment.",
+    if (!message.audio) {
+      toast({
+        title: "Audio unavailable",
+        description: "This word doesn't have audio pronunciation available.",
+        variant: "default",
+      });
+      return;
+    }
+    
+    // Create an Audio object instance without 'new' keyword
+    const audio = document.createElement('audio');
+    audio.src = message.audio;
+    audio.play().catch(error => {
+      toast({
+        title: "Audio playback failed",
+        description: "Unable to play the pronunciation audio.",
+        variant: "destructive",
+      });
     });
   };
 
   const startNewConversation = () => {
     setMessages([]);
+    
+    // Get initial message from the AI
+    setTimeout(() => {
+      // Get a random response to start the conversation
+      const initialResponse = getRandomResponse(currentTopic);
+      setMessages([initialResponse]);
+    }, 100);
+    
     toast({
       title: "New Conversation Started",
       description: `Starting a new conversation about ${conversationTopics.find(t => t.id === currentTopic)?.name}`,
     });
   };
+
+  // Initialize conversation with an AI message when the component mounts or topic changes
+  useEffect(() => {
+    if (messages.length === 0) {
+      startNewConversation();
+    }
+  }, [currentTopic]);
 
   if (!user) return null;
 

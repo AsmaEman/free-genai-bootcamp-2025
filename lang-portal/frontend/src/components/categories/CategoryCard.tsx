@@ -2,8 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Book, Brain, PenTool, MessageSquare } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 
 type Category = Database['public']['Tables']['categories']['Row'];
 
@@ -20,18 +18,11 @@ const categoryIcons = {
 };
 
 export const CategoryCard = ({ category, onClick }: CategoryCardProps) => {
-  const { data: wordCount } = useQuery({
-    queryKey: ['categoryWordCount', category.id],
-    queryFn: async () => {
-      const { count, error } = await supabase
-        .from('vocabulary')
-        .select('*', { count: 'exact', head: true })
-        .eq('category_id', category.id);
-      
-      if (error) throw error;
-      return count || 0;
-    }
-  });
+  // Hardcoded word count for demo purposes
+  const wordCount = category.name === 'Greetings' ? 10 :
+                   category.name === 'Family' ? 8 :
+                   category.name === 'Food' ? 12 : 
+                   category.name === 'Numbers' ? 6 : 15;
 
   return (
     <div
@@ -43,11 +34,9 @@ export const CategoryCard = ({ category, onClick }: CategoryCardProps) => {
           <div className="p-2 rounded-lg bg-primary/10 text-primary">
             {categoryIcons[category.name as keyof typeof categoryIcons] || <Book className="h-6 w-6" />}
           </div>
-          {typeof wordCount === 'number' && (
-            <span className="text-sm text-muted-foreground">
-              {wordCount} words
-            </span>
-          )}
+          <span className="text-sm text-muted-foreground">
+            {wordCount} words
+          </span>
         </div>
         <h4 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
           {category.name}
