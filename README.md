@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎯 Arabic Vocabulary Learning Platform
+#  Arabic Vocabulary Learning Platform
 
 An innovative, interactive platform for mastering Arabic vocabulary and conversation skills.
 
@@ -13,6 +13,7 @@ An innovative, interactive platform for mastering Arabic vocabulary and conversa
 </div>
 
 ---
+
 ## 🔥 Live Demos
 
 https://github.com/user-attachments/assets/d34df480-7a61-43ae-af53-433d850c5dbf
@@ -31,38 +32,42 @@ https://vocabulary-learner-red.vercel.app/
 ---
 
 </div>
+---
 
 ## ✨ Features
 
 ### Core Functionality
+
 - 📚 **Smart Vocabulary Management**
   - Personalized word lists
   - Spaced repetition learning
   - Progress tracking
-  
+
 - 🎯 **Interactive Learning**
   - Real-time pronunciation feedback
   - Writing practice with instant corrections
   - Contextual learning examples
-  
+
 - 🔄 **Adaptive Learning System**
   - Difficulty adjustment based on performance
   - Personalized study paths
   - Comprehensive progress analytics
 
 ### Technical Highlights
-- 🛡️ Secure authentication system
-- 🎨 Customizable themes (Light/Dark)
-- 📱 Responsive design for all devices
-- ⚡ Optimized performance
-- 🔄 Real-time updates
+
+- 🛡️ Secure authentication system  
+- 🎨 Customizable themes (Light/Dark)  
+- 📱 Responsive design for all devices  
+- ⚡ Optimized performance  
+- 🔄 Real-time updates  
+
+---
 
 ## 🚀 Quick Start
 
-
+```bash
 # Clone the repository
 git clone <repository-url>
-
 
 # Navigate to project directory
 cd lang-portal
@@ -73,160 +78,168 @@ npm install
 
 # Start development server
 npm run dev
+```
 
-🛠️ Installation
-Prerequisites
-Node.js (v16 or higher)
+---
 
-npm or yarn
+## 🛠️ Installation
 
-Modern web browser
+### Prerequisites
 
-Environment Setup
-Create .env file in root directory
+- Node.js (v16 or higher)  
+- npm or yarn  
+- Modern web browser  
 
--VITE_SUPABASE_URL=your_supabase_url
+### Environment Setup
 
--VITE_SUPABASE_ANON_KEY=your_supabase_key
+Create `.env` file in root directory:
 
--VITE_API_BASE_URL=your_api_url
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_key
+VITE_API_BASE_URL=your_api_url
+```
 
-env
-Configure database
+Configure database:
 
+```bash
 npm run setup-db
+```
 
+---
 
-📚 Documentation
-Tech Stack
-Frontend
+## 📚 Documentation
 
-React 18.3
+### Tech Stack
 
-TypeScript 5.5
+#### Frontend
 
-Vite 5.4
+- React 18.3  
+- TypeScript 5.5  
+- Vite 5.4  
+- Tailwind CSS 3.4  
 
-Tailwind CSS 3.4
+#### State Management
 
-State Management
+- React Query 5.56  
+- React Hook Form 7.53  
 
-React Query 5.56
+#### UI Components
 
-React Hook Form 7.53
+- shadcn/ui  
+- Radix UI primitives  
 
-UI Components
+#### Database & Backend
 
-shadcn/ui
+- Supabase  
+- RESTful APIs  
 
-Radix UI primitives
+---
 
-Database & Backend
+### Project Structure
 
-Supabase
+```
+src/
+├── components/        # Reusable UI components
+│   ├── common/        # Shared components
+│   ├── forms/         # Form-related components
+│   └── layouts/       # Layout components
+├── features/          # Feature-specific components
+│   ├── auth/          # Authentication
+│   ├── vocabulary/    # Vocabulary management
+│   └── practice/      # Practice exercises
+├── hooks/             # Custom React hooks
+├── lib/               # Utility functions
+├── styles/            # Global styles
+└── types/             # TypeScript definitions
+```
 
-RESTful APIs
+---
 
-Project Structure
-- src/
-- ├── components/          # Reusable UI components
-- │   ├── common/         # Shared components
-- │   ├── forms/          # Form-related components
-- │   └── layouts/        # Layout components
-- ├── features/           # Feature-specific components
-- │   ├── auth/          # Authentication
-- │   ├── vocabulary/    # Vocabulary management
-- │   └── practice/      # Practice exercises
-- ├── hooks/             # Custom React hooks
-- ├── lib/               # Utility functions
-- ├── styles/           # Global styles
-- └── types/            # TypeScript definitions
+## 📜 Available Scripts
 
+```bash
+npm run dev       # Start development server
+npm run build     # Build for production
+npm run preview   # Preview production build
+npm run lint      # Lint code
+npm run test      # Run tests
+```
 
-Available Scripts
-- npm run dev          # Start development server
-- npm run build        # Build for production
-- npm run preview      # Preview production build
-- npm run lint         # Lint code
-- npm run test         # Run tests
+---
 
+## 🔧 Configuration
 
-🔧 Configuration
-Theme Customization
+### Theme Customization
+
+```ts
 // tailwind.config.ts
 module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: {...},
-        secondary: {...}
+        primary: { ... },
+        secondary: { ... }
       }
     }
   }
 }
+```
 
+### API Configuration
 
+- Endpoint configuration in `src/config/api.ts`  
+- Authentication setup in `src/lib/auth.ts`
 
-typescript
-API Configuration
-Endpoint configuration in src/config/api.ts
+---
 
-Authentication setup in src/lib/auth.ts
+## 📈 Performance
 
-🤝 Contributing
-We welcome contributions! 
+- Lighthouse Score: 95+  
+- First Contentful Paint: < 1.5s  
+- Time to Interactive: < 3.5s  
+- Bundle Size: < 200KB (gzipped)
 
-📈 Performance
-Lighthouse Score: 95+
+---
 
-First Contentful Paint: < 1.5s
+## 🔒 Security
 
-Time to Interactive: < 3.5s
+- HTTPS enforced  
+- XSS protection  
+- CSRF protection  
+- Input sanitization  
+- Rate limiting  
+- Security headers configured  
 
-Bundle Size: < 200KB (gzipped)
+---
 
-🔒 Security
-HTTPS enforced
+## 📱 Browser Support
 
-XSS protection
+- Chrome (last 2 versions)  
+- Firefox (last 2 versions)  
+- Safari (last 2 versions)  
+- Edge (last 2 versions)  
 
-CSRF protection
+---
 
-Input sanitization
+## 🗺️ Roadmap
 
-Rate limiting
+- [ ] Offline support  
+- [ ] Voice recognition  
+- [ ] Social learning features  
+- [ ] AI-powered corrections  
+- [ ] Advanced analytics  
 
-Security headers configured
+---
 
-📱 Browser Support
-Chrome (last 2 versions)
+## 📄 License
 
-Firefox (last 2 versions)
+This project is licensed under the MIT License – see the [LICENSE](./LICENSE) file for details.
 
-Safari (last 2 versions)
-
-Edge (last 2 versions)
-
-🗺️ Roadmap
-
-Offline support
-
-Voice recognition
-
-Social learning features
-
-AI-powered corrections
-
-Advanced analytics
-
-📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-
+---
 
 <div align="center">
 
 Made with ❤️ by the Arabic Vocabulary Team
 
 </div>
-
